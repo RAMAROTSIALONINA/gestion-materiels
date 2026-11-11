@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Étiquettes — Gestion des matériels</title>
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/css/style.css">
+  <script src="/vendor/jsbarcode/JsBarcode.all.min.js"></script>
+  <script type="module" src="/js/etiquettes.js"></script>
+</head>
+<body class="page-etiquettes">
+  <header class="entete" id="entete">
+    <a class="marque" href="/">Gestion des matériels</a>
+  </header>
+  <div id="messages" class="messages" aria-live="polite"></div>
+
+  <main class="contenu contenu-large">
+    <p class="fil"><a href="/materiels">‹ Matériels</a></p>
+    <div class="barre-titre">
+      <h1>Étiquettes code-barres</h1>
+      <div class="actions-ligne">
+        <button type="button" id="imprimer" class="bouton" disabled>Imprimer</button>
+      </div>
+    </div>
+    <p class="aide" id="consigne">
+      Planche A4 de 21 étiquettes (3 × 7, format 63,5 × 38,1 mm). À l’impression, choisissez
+      « Taille réelle » (100 %, sans ajustement à la page).
+    </p>
+    <div class="champ champ-etroit">
+      <label for="decalage">Commencer à l’étiquette n°</label>
+      <input type="number" id="decalage" min="1" max="21" value="1" inputmode="numeric">
+      <p class="aide-champ">Pour réutiliser une planche déjà entamée.</p>
+    </div>
+  </main>
+
+  <div class="planche" id="planche" aria-label="Aperçu des étiquettes"></div>
+</body>
+</html>

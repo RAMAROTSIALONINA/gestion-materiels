@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Utilisateurs — Gestion des matériels</title>
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/css/style.css">
+  <script type="module" src="/js/utilisateurs.js"></script>
+</head>
+<body>
+  <header class="entete" id="entete">
+    <a class="marque" href="/">Gestion des matériels</a>
+  </header>
+  <div id="messages" class="messages" aria-live="polite"></div>
+
+  <main class="contenu contenu-large">
+    <div class="barre-titre">
+      <h1>Utilisateurs</h1>
+      <button type="button" id="nouveau" class="bouton">Nouvel utilisateur</button>
+    </div>
+    <p class="aide">
+      Un compte ne se supprime pas : il se suspend ou se désactive. Un nouveau compte reçoit un mot de passe
+      provisoire, à changer à la première connexion.
+    </p>
+
+    <div class="tableau-conteneur">
+      <table class="tableau">
+        <thead>
+          <tr>
+            <th scope="col">Nom</th>
+            <th scope="col">Connexion</th>
+            <th scope="col">Rôle</th>
+            <th scope="col">Statut</th>
+            <th scope="col">Dernière connexion</th>
+            <th scope="col"><span class="visuellement-cache">Actions</span></th>
+          </tr>
+        </thead>
+        <tbody id="lignes">
+          <tr><td colspan="6" class="cellule-vide">Chargement…</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </main>
+</body>
+</html>

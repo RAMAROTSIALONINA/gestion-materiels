@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Mes matériels — Gestion des matériels</title>
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/css/style.css">
+  <script type="module" src="/js/mes-materiels.js"></script>
+</head>
+<body>
+  <header class="entete" id="entete">
+    <a class="marque" href="/">Gestion des matériels</a>
+  </header>
+  <div id="messages" class="messages" aria-live="polite"></div>
+
+  <main class="contenu contenu-large">
+    <h1>Mes matériels</h1>
+    <p class="aide" id="aide">Les matériels qui vous sont remis, avec la date à laquelle vous devez les rendre.</p>
+    <p class="avertissement" id="non-rattache" hidden>
+      Votre compte n’est relié à aucune fiche employé : demandez à l’administrateur de le relier pour voir vos matériels.
+    </p>
+
+    <div class="tableau-conteneur">
+      <table class="tableau">
+        <thead>
+          <tr>
+            <th scope="col">Matériel</th>
+            <th scope="col">Marque et modèle</th>
+            <th scope="col">Contrat</th>
+            <th scope="col">Remis le</th>
+            <th scope="col">À rendre le</th>
+            <th scope="col"><span class="visuellement-cache">Signaler</span></th>
+          </tr>
+        </thead>
+        <tbody id="materiels"><tr><td colspan="6" class="cellule-vide">Chargement…</td></tr></tbody>
+      </table>
+    </div>
+
+    <section class="section-fiche" id="section-signalements" hidden>
+      <h2>Mes signalements</h2>
+      <div class="tableau-conteneur">
+        <table class="tableau">
+          <thead>
+            <tr>
+              <th scope="col">Date</th>
+              <th scope="col">Matériel</th>
+              <th scope="col">Objet</th>
+              <th scope="col">Statut</th>
+              <th scope="col">Réponse</th>
+            </tr>
+          </thead>
+          <tbody id="signalements"></tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+</body>
+</html>

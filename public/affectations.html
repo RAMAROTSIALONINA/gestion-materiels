@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Affectations — Gestion des matériels</title>
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/css/style.css">
+  <script type="module" src="/js/affectations.js"></script>
+</head>
+<body>
+  <header class="entete" id="entete">
+    <a class="marque" href="/">Gestion des matériels</a>
+  </header>
+  <div id="messages" class="messages" aria-live="polite"></div>
+
+  <main class="contenu contenu-large">
+    <div class="barre-titre">
+      <h1>Affectations</h1>
+      <button type="button" id="remettre" class="bouton" hidden>Remettre un matériel</button>
+    </div>
+    <p class="aide">
+      Matériels remis aux employés sous contrat, avec la date de retour prévue. Les retours en retard
+      apparaissent en premier.
+    </p>
+
+    <form class="filtres" id="filtres" role="search">
+      <div class="champ champ-large">
+        <label for="q">Rechercher</label>
+        <input type="search" id="q" name="q" placeholder="Code, désignation, matricule, nom, contrat" autocomplete="off">
+      </div>
+      <div class="champ">
+        <label for="etat">Affectations</label>
+        <select id="etat" name="etat">
+          <option value="en_cours">En cours</option>
+          <option value="rendues">Rendues</option>
+          <option value="toutes">Toutes</option>
+        </select>
+      </div>
+      <div class="champ champ-cases">
+        <label class="case"><input type="checkbox" name="retard" value="oui"> En retard seulement</label>
+      </div>
+    </form>
+
+    <div class="tableau-conteneur">
+      <table class="tableau">
+        <thead>
+          <tr>
+            <th scope="col">Matériel</th>
+            <th scope="col">Employé</th>
+            <th scope="col">Contrat</th>
+            <th scope="col">Remis le</th>
+            <th scope="col">Retour prévu</th>
+            <th scope="col">Rendu</th>
+            <th scope="col"><span class="visuellement-cache">Actions</span></th>
+          </tr>
+        </thead>
+        <tbody id="lignes"><tr><td colspan="7" class="cellule-vide">Chargement…</td></tr></tbody>
+      </table>
+    </div>
+    <div class="pagination" id="pagination"></div>
+  </main>
+</body>
+</html>

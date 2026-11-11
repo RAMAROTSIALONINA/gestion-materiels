@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Employés — Gestion des matériels</title>
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/css/style.css">
+  <script type="module" src="/js/employes.js"></script>
+</head>
+<body>
+  <header class="entete" id="entete">
+    <a class="marque" href="/">Gestion des matériels</a>
+  </header>
+  <div id="messages" class="messages" aria-live="polite"></div>
+
+  <main class="contenu contenu-large">
+    <div class="barre-titre">
+      <h1>Employés</h1>
+      <button type="button" id="nouveau" class="bouton">Nouvel employé</button>
+    </div>
+    <p class="aide">
+      Les personnes à qui l’on remet du matériel. Données limitées au nécessaire. Une fiche ne se supprime pas :
+      elle se désactive au départ de l’employé, une fois ses matériels rendus.
+    </p>
+
+    <form class="filtres" id="filtres" role="search">
+      <div class="champ">
+        <label for="q">Rechercher</label>
+        <input type="search" id="q" name="q" placeholder="Matricule, nom, fonction" autocomplete="off">
+      </div>
+      <div class="champ">
+        <label for="service_id">Service</label>
+        <select id="service_id" name="service_id"><option value="">Tous</option></select>
+      </div>
+      <div class="champ">
+        <label for="actif">Fiches</label>
+        <select id="actif" name="actif">
+          <option value="oui">Actives</option>
+          <option value="non">Désactivées</option>
+          <option value="">Toutes</option>
+        </select>
+      </div>
+    </form>
+
+    <div class="tableau-conteneur">
+      <table class="tableau">
+        <thead>
+          <tr>
+            <th scope="col">Matricule</th>
+            <th scope="col">Nom</th>
+            <th scope="col">Fonction</th>
+            <th scope="col">Service</th>
+            <th scope="col">Site</th>
+            <th scope="col">Matériels en sa possession</th>
+            <th scope="col">Fiche</th>
+            <th scope="col"><span class="visuellement-cache">Actions</span></th>
+          </tr>
+        </thead>
+        <tbody id="lignes"><tr><td colspan="8" class="cellule-vide">Chargement…</td></tr></tbody>
+      </table>
+    </div>
+    <div class="pagination" id="pagination"></div>
+  </main>
+</body>
+</html>

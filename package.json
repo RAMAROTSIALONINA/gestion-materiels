@@ -1,0 +1,30 @@
+{
+  "name": "gestion-materiels",
+  "version": "0.7.0",
+  "description": "Gestion des matériels et des articles : entrées, sorties, affectations, stocks et états des biens de la société",
+  "private": true,
+  "type": "module",
+  "main": "server.js",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "configurer": "node scripts/configurer.js",
+    "start": "node server.js",
+    "dev": "node --watch server.js",
+    "db:migrer": "node database/migrer.js",
+    "db:verifier": "node database/verifier.js",
+    "admin:creer": "node scripts/creer-admin.js",
+    "test": "node --test --test-concurrency=1 \"tests/*.test.js\""
+  },
+  "dependencies": {
+    "argon2": "^0.45.2",
+    "connect-pg-simple": "^10.0.0",
+    "express": "^5.3.0",
+    "express-rate-limit": "^8.7.4",
+    "express-session": "^1.19.0",
+    "helmet": "^8.3.0",
+    "jsbarcode": "^3.12.3",
+    "pg": "^8.23.1"
+  }
+}

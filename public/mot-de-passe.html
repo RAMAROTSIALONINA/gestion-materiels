@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Mon mot de passe — Gestion des matériels</title>
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/css/style.css">
+  <script type="module" src="/js/mot-de-passe.js"></script>
+</head>
+<body>
+  <header class="entete" id="entete">
+    <a class="marque" href="/">Gestion des matériels</a>
+  </header>
+  <div id="messages" class="messages" aria-live="polite"></div>
+
+  <main class="contenu contenu-etroit">
+    <h1>Mon mot de passe</h1>
+    <p id="obligatoire" class="avertissement" hidden>
+      Votre mot de passe actuel est provisoire. Choisissez votre mot de passe personnel pour continuer.
+    </p>
+
+    <section class="carte">
+      <form id="formulaire" novalidate>
+        <div id="erreur" class="erreur-formulaire" role="alert" hidden></div>
+        <div class="champ">
+          <label for="actuel">Mot de passe actuel</label>
+          <input id="actuel" name="actuel" type="password" autocomplete="current-password" maxlength="200" required>
+        </div>
+        <div class="champ">
+          <label for="nouveau">Nouveau mot de passe</label>
+          <input id="nouveau" name="nouveau" type="password" autocomplete="new-password" minlength="10" maxlength="128"
+                 aria-describedby="regle" required>
+          <p id="regle" class="aide-champ">10 caractères au moins, sans votre identifiant ni votre adresse e-mail. Une courte phrase facile à retenir est un bon choix.</p>
+        </div>
+        <div class="champ">
+          <label for="confirmation">Confirmation du nouveau mot de passe</label>
+          <input id="confirmation" name="confirmation" type="password" autocomplete="new-password" maxlength="128" required>
+        </div>
+        <button id="valider" class="bouton" type="submit">Enregistrer</button>
+      </form>
+    </section>
+  </main>
+</body>
+</html>

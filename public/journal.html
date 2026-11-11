@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Journal des opérations — Gestion des matériels</title>
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/css/style.css">
+  <script type="module" src="/js/journal.js"></script>
+</head>
+<body>
+  <header class="entete" id="entete">
+    <a class="marque" href="/">Gestion des matériels</a>
+  </header>
+  <div id="messages" class="messages" aria-live="polite"></div>
+
+  <main class="contenu contenu-large">
+    <h1>Journal des opérations</h1>
+    <p class="aide">
+      Connexions, validations, annulations, réceptions, remises, changements d’état, paramètres…
+      Chaque opération sensible est inscrite ici avec son auteur, sa date et son adresse ; rien ne s’efface.
+    </p>
+
+    <form class="filtres" id="filtres" role="search">
+      <div class="champ champ-large">
+        <label for="q">Rechercher dans les détails</label>
+        <input type="search" id="q" name="q" placeholder="Référence, code, motif, adresse IP" autocomplete="off">
+      </div>
+      <div class="champ">
+        <label for="action">Opération</label>
+        <select id="action" name="action"><option value="">Toutes</option></select>
+      </div>
+      <div class="champ">
+        <label for="utilisateur_id">Personne</label>
+        <select id="utilisateur_id" name="utilisateur_id"><option value="">Toutes</option></select>
+      </div>
+      <div class="champ">
+        <label for="date_debut">Du</label>
+        <input type="date" id="date_debut" name="date_debut">
+      </div>
+      <div class="champ">
+        <label for="date_fin">Au</label>
+        <input type="date" id="date_fin" name="date_fin">
+      </div>
+    </form>
+
+    <div class="tableau-conteneur">
+      <table class="tableau">
+        <thead>
+          <tr>
+            <th scope="col">Date</th>
+            <th scope="col">Personne</th>
+            <th scope="col">Opération</th>
+            <th scope="col">Sur</th>
+            <th scope="col">Détails</th>
+            <th scope="col">Adresse</th>
+          </tr>
+        </thead>
+        <tbody id="lignes"><tr><td colspan="6" class="cellule-vide">Chargement…</td></tr></tbody>
+      </table>
+    </div>
+    <div class="pagination" id="pagination"></div>
+  </main>
+</body>
+</html>

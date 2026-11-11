@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Connexion — Gestion des matériels</title>
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/css/style.css">
+  <script type="module" src="/js/connexion.js"></script>
+</head>
+<body class="page-connexion">
+  <main class="connexion">
+    <div class="carte carte-connexion">
+      <div class="connexion-marque">
+        <img src="/favicon.svg" alt="" width="36" height="36">
+        <span>Gestion des matériels</span>
+      </div>
+      <h1>Connexion</h1>
+      <form id="formulaire" novalidate>
+        <div id="erreur" class="erreur-formulaire" role="alert" hidden></div>
+        <div class="champ">
+          <label for="identifiant">Identifiant ou adresse e-mail</label>
+          <input id="identifiant" name="identifiant" autocomplete="username" maxlength="200" required autofocus>
+        </div>
+        <div class="champ">
+          <label for="mot_de_passe">Mot de passe</label>
+          <input id="mot_de_passe" name="mot_de_passe" type="password" autocomplete="current-password" maxlength="200" required>
+        </div>
+        <button id="valider" class="bouton bouton-large" type="submit">Se connecter</button>
+      </form>
+      <p class="aide petite">Mot de passe oublié ? Adressez-vous à l’administrateur de l’application.</p>
+    </div>
+  </main>
+</body>
+</html>

@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Alertes — Gestion des matériels</title>
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/css/style.css">
+  <script type="module" src="/js/alertes.js"></script>
+</head>
+<body>
+  <header class="entete" id="entete">
+    <a class="marque" href="/">Gestion des matériels</a>
+  </header>
+  <div id="messages" class="messages" aria-live="polite"></div>
+
+  <main class="contenu contenu-large">
+    <div class="barre-titre">
+      <h1>Alertes</h1>
+      <button type="button" id="actualiser" class="bouton bouton-secondaire">Actualiser</button>
+    </div>
+    <p class="aide" id="aide">Ce qui demande une action : stocks bas, retours attendus, transferts et réparations qui durent.</p>
+    <nav class="sommaire-alertes" id="sommaire" aria-label="Rubriques d’alerte"></nav>
+    <div class="liste-cartes" id="rubriques">
+      <p class="secondaire">Chargement…</p>
+    </div>
+  </main>
+</body>
+</html>

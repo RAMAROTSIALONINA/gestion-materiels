@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Saisie d’un mouvement — Gestion des matériels</title>
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/css/style.css">
+  <script type="module" src="/js/mouvement-saisie.js"></script>
+</head>
+<body>
+  <header class="entete" id="entete">
+    <a class="marque" href="/">Gestion des matériels</a>
+  </header>
+  <div id="messages" class="messages" aria-live="polite"></div>
+
+  <main class="contenu contenu-large">
+    <p class="fil"><a href="/mouvements">‹ Mouvements</a></p>
+    <h1 id="titre">Nouveau mouvement</h1>
+
+    <form id="formulaire" novalidate>
+      <div id="erreur" class="erreur-formulaire" role="alert" hidden></div>
+
+      <section class="carte">
+        <h2>Opération</h2>
+        <div class="grille-champs">
+          <div class="champ">
+            <label for="type_code">Type de mouvement *</label>
+            <select id="type_code" name="type_code"></select>
+            <p class="aide-champ" id="aide-type"></p>
+          </div>
+          <div class="champ">
+            <label for="date_mouvement">Date</label>
+            <input type="date" id="date_mouvement" name="date_mouvement">
+          </div>
+          <div class="champ" data-si="origine">
+            <label for="site_source_id">Site d’origine *</label>
+            <select id="site_source_id" name="site_source_id"></select>
+          </div>
+          <div class="champ" data-si="destination">
+            <label for="site_destination_id">Site de destination *</label>
+            <select id="site_destination_id" name="site_destination_id"></select>
+          </div>
+          <div class="champ champ-large">
+            <label for="motif" id="libelle-motif">Motif</label>
+            <input id="motif" name="motif" maxlength="500" autocomplete="off">
+          </div>
+          <div class="champ" data-si="beneficiaire">
+            <label for="service_beneficiaire_id">Service bénéficiaire</label>
+            <select id="service_beneficiaire_id" name="service_beneficiaire_id"></select>
+          </div>
+          <div class="champ" data-si="beneficiaire">
+            <label for="employe_beneficiaire_id">ou employé bénéficiaire</label>
+            <select id="employe_beneficiaire_id" name="employe_beneficiaire_id"></select>
+          </div>
+          <div class="champ" data-si="fournisseur">
+            <label for="origine">Fournisseur ou donateur</label>
+            <input id="origine" name="origine" maxlength="120" autocomplete="off">
+          </div>
+          <div class="champ">
+            <label for="reference_externe">N° de bon ou de facture</label>
+            <input id="reference_externe" name="reference_externe" maxlength="60" autocomplete="off">
+          </div>
+          <div class="champ" data-si="ticket">
+            <label for="numero_ticket" id="libelle-ticket">N° de ticket</label>
+            <input id="numero_ticket" name="numero_ticket" maxlength="60" autocomplete="off">
+          </div>
+        </div>
+        <p class="avertissement" id="note-autorisation" hidden>
+          Ce mouvement doit être autorisé : il sera validé par un administrateur ou par un autre gestionnaire,
+          depuis la liste des mouvements (« À autoriser par moi »).
+        </p>
+      </section>
+
+      <section class="carte section-fiche">
+        <h2>Lignes</h2>
+        <div class="ajout-lignes">
+          <div class="champ champ-large" data-si="articles">
+            <label for="article">Article</label>
+            <input id="article" list="liste-articles" placeholder="Code ou désignation" autocomplete="off">
+            <datalist id="liste-articles"></datalist>
+          </div>
+          <div class="champ champ-etroit" data-si="articles">
+            <label for="quantite">Quantité</label>
+            <input id="quantite" inputmode="decimal" autocomplete="off">
+          </div>
+          <div class="champ champ-bouton" data-si="articles">
+            <button type="button" id="ajouter-article" class="bouton bouton-secondaire">Ajouter l’article</button>
+          </div>
+          <div class="champ champ-large" data-si="materiels">
+            <label for="code-materiel">Matériel : scanner l’étiquette ou saisir le code</label>
+            <input id="code-materiel" autocomplete="off" placeholder="MAT-2026-0001">
+          </div>
+          <div class="champ champ-bouton" data-si="materiels">
+            <button type="button" id="ajouter-materiel" class="bouton bouton-secondaire">Ajouter le matériel</button>
+          </div>
+        </div>
+        <input type="hidden" name="lignes">
+        <div class="tableau-conteneur">
+          <table class="tableau">
+            <thead>
+              <tr>
+                <th scope="col">Code</th>
+                <th scope="col">Désignation</th>
+                <th scope="col" class="nombre">Quantité</th>
+                <th scope="col" class="nombre">Stock à l’origine</th>
+                <th scope="col"><span class="visuellement-cache">Retirer</span></th>
+              </tr>
+            </thead>
+            <tbody id="lignes"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <div class="barre-actions">
+        <a href="/mouvements" class="bouton bouton-secondaire">Annuler</a>
+        <button type="submit" value="brouillon" class="bouton bouton-secondaire" id="brouillon">Enregistrer en brouillon</button>
+        <button type="submit" value="valider" class="bouton" id="valider">Enregistrer et valider</button>
+      </div>
+    </form>
+  </main>
+</body>
+</html>

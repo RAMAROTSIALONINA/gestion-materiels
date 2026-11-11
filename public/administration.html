@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Administration — Gestion des matériels</title>
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/css/style.css">
+  <script type="module" src="/js/administration.js"></script>
+</head>
+<body>
+  <header class="entete" id="entete">
+    <a class="marque" href="/">Gestion des matériels</a>
+  </header>
+  <div id="messages" class="messages" aria-live="polite"></div>
+
+  <main class="contenu contenu-large">
+    <h1>Administration</h1>
+    <p class="aide">
+      Les listes de référence utilisées partout dans l’application. Un élément ne se supprime pas :
+      il se désactive, et n’est alors plus proposé dans les formulaires.
+    </p>
+
+    <div class="onglets" role="tablist" aria-label="Listes de référence">
+      <button type="button" role="tab" data-onglet="sites">Sites</button>
+      <button type="button" role="tab" data-onglet="services">Services</button>
+      <button type="button" role="tab" data-onglet="categories">Catégories</button>
+      <button type="button" role="tab" data-onglet="unites">Unités</button>
+      <button type="button" role="tab" data-onglet="parametres">Paramètres</button>
+    </div>
+
+    <section id="panneau" role="tabpanel">
+      <div class="barre-titre">
+        <h2 id="titre-panneau"></h2>
+        <button type="button" id="ajouter" class="bouton"></button>
+      </div>
+      <p class="aide" id="aide-panneau"></p>
+      <div class="tableau-conteneur">
+        <table class="tableau">
+          <thead><tr id="entetes"></tr></thead>
+          <tbody id="lignes"></tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+</body>
+</html>

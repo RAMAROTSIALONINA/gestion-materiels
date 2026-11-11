@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Mouvement — Gestion des matériels</title>
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/css/style.css">
+  <script type="module" src="/js/mouvement.js"></script>
+</head>
+<body>
+  <header class="entete" id="entete">
+    <a class="marque" href="/">Gestion des matériels</a>
+  </header>
+  <div id="messages" class="messages" aria-live="polite"></div>
+
+  <main class="contenu contenu-large">
+    <p class="fil"><a href="/mouvements">‹ Mouvements</a></p>
+    <div class="barre-titre">
+      <div>
+        <h1 id="titre">Mouvement</h1>
+        <div class="badges" id="pastilles"></div>
+      </div>
+      <div class="actions-ligne" id="actions"></div>
+    </div>
+    <p class="avertissement" id="note" hidden></p>
+
+    <div class="grille-fiche" id="fiche"></div>
+
+    <section class="section-fiche">
+      <h2>Lignes</h2>
+      <div class="tableau-conteneur">
+        <table class="tableau">
+          <thead>
+            <tr>
+              <th scope="col">Code</th>
+              <th scope="col">Désignation</th>
+              <th scope="col">Origine → destination</th>
+              <th scope="col" class="nombre">Quantité</th>
+              <th scope="col" class="nombre" id="colonne-recue" hidden>Reçu</th>
+              <th scope="col" class="nombre" id="colonne-stock" hidden>Stock à l’origine</th>
+            </tr>
+          </thead>
+          <tbody id="lignes"><tr><td colspan="6" class="cellule-vide">Chargement…</td></tr></tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+</body>
+</html>

@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Articles — Gestion des matériels</title>
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/css/style.css">
+  <script type="module" src="/js/articles.js"></script>
+</head>
+<body>
+  <header class="entete" id="entete">
+    <a class="marque" href="/">Gestion des matériels</a>
+  </header>
+  <div id="messages" class="messages" aria-live="polite"></div>
+
+  <main class="contenu contenu-large">
+    <div class="barre-titre">
+      <h1>Articles</h1>
+      <button type="button" id="nouveau" class="bouton" hidden>Nouvel article</button>
+    </div>
+    <p class="aide">
+      Consommables suivis en quantité. Le stock évolue uniquement par les mouvements (réceptions, sorties,
+      transferts), qui arrivent à la phase suivante.
+    </p>
+
+    <form class="filtres" id="filtres" role="search">
+      <div class="champ champ-large">
+        <label for="q">Rechercher</label>
+        <input type="search" id="q" name="q" placeholder="Code ou désignation" autocomplete="off">
+      </div>
+      <div class="champ">
+        <label for="categorie_id">Catégorie</label>
+        <select id="categorie_id" name="categorie_id"><option value="">Toutes</option></select>
+      </div>
+      <div class="champ">
+        <label for="actif">Articles</label>
+        <select id="actif" name="actif">
+          <option value="">Actifs</option>
+          <option value="non">Inactifs</option>
+          <option value="tous">Tous</option>
+        </select>
+      </div>
+      <div class="champ champ-cases">
+        <label class="case"><input type="checkbox" name="alerte" value="oui"> Stock faible</label>
+        <label class="case"><input type="checkbox" name="rupture" value="oui"> En rupture</label>
+      </div>
+    </form>
+
+    <div class="tableau-conteneur">
+      <table class="tableau">
+        <thead>
+          <tr>
+            <th scope="col">Code</th>
+            <th scope="col">Désignation</th>
+            <th scope="col">Catégorie</th>
+            <th scope="col" class="nombre">Disponible</th>
+            <th scope="col" class="nombre">En route</th>
+            <th scope="col" class="nombre">Seuil</th>
+            <th scope="col">Alerte</th>
+            <th scope="col">Magasin</th>
+          </tr>
+        </thead>
+        <tbody id="lignes"><tr><td colspan="8" class="cellule-vide">Chargement…</td></tr></tbody>
+      </table>
+    </div>
+    <div class="pagination" id="pagination"></div>
+  </main>
+</body>
+</html>

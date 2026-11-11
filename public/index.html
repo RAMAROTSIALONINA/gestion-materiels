@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Gestion des matériels</title>
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/css/style.css">
+  <script type="module" src="/js/accueil.js"></script>
+</head>
+<body>
+  <header class="entete" id="entete">
+    <a class="marque" href="/">Gestion des matériels</a>
+  </header>
+
+  <div id="messages" class="messages" aria-live="polite"></div>
+
+  <main class="contenu">
+    <h1 id="bonjour">Bonjour</h1>
+    <p class="aide" id="presentation">
+      Utilisez le menu pour les matériels, les articles et les employés. Le tableau de bord (indicateurs, alertes,
+      derniers mouvements) arrivera avec les rapports.
+    </p>
+
+    <section class="carte" aria-labelledby="titre-etat">
+      <div class="carte-titre">
+        <h2 id="titre-etat">Serveur et base de données</h2>
+        <span id="pastille" class="pastille pastille-attente">Vérification…</span>
+      </div>
+      <dl class="liste-etat">
+        <dt>Application</dt>      <dd id="etat-application">…</dd>
+        <dt>Base de données</dt>  <dd id="etat-base">…</dd>
+        <dt>Version du schéma</dt><dd id="etat-schema">…</dd>
+        <dt>Date du jour</dt>     <dd id="etat-date">…</dd>
+        <dt>Temps de réponse</dt> <dd id="etat-delai">…</dd>
+      </dl>
+      <button type="button" id="actualiser" class="bouton">Actualiser</button>
+    </section>
+  </main>
+</body>
+</html>

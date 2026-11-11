@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Réceptions — Gestion des matériels</title>
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/css/style.css">
+  <script type="module" src="/js/receptions.js"></script>
+</head>
+<body>
+  <header class="entete" id="entete">
+    <a class="marque" href="/">Gestion des matériels</a>
+  </header>
+  <div id="messages" class="messages" aria-live="polite"></div>
+
+  <main class="contenu contenu-large">
+    <h1>Réceptions</h1>
+    <p class="aide" id="aide">
+      Transferts envoyés et pas encore reçus. À l’arrivée, confirmez ce qui est arrivé :
+      le stock et les matériels passent alors au site de destination.
+    </p>
+    <div class="liste-cartes" id="transferts">
+      <p class="secondaire">Chargement…</p>
+    </div>
+  </main>
+</body>
+</html>

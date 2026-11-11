@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Historique des états — Gestion des matériels</title>
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/css/style.css">
+  <script type="module" src="/js/historique.js"></script>
+</head>
+<body>
+  <header class="entete" id="entete">
+    <a class="marque" href="/">Gestion des matériels</a>
+  </header>
+  <div id="messages" class="messages" aria-live="polite"></div>
+
+  <main class="contenu contenu-large">
+    <p class="fil"><a href="/materiels">‹ Matériels</a></p>
+    <h1>Historique des états</h1>
+    <p class="aide" id="aide">
+      Chaque changement d’état ou de statut des matériels, daté et signé, avec son commentaire.
+      Rien ne s’efface : c’est la mémoire du parc.
+    </p>
+
+    <form class="filtres" id="filtres" role="search">
+      <div class="champ champ-large">
+        <label for="q">Rechercher</label>
+        <input type="search" id="q" name="q" placeholder="Code, désignation, commentaire" autocomplete="off">
+      </div>
+      <div class="champ">
+        <label for="etat">Nouvel état</label>
+        <select id="etat" name="etat"><option value="">Tous</option></select>
+      </div>
+      <div class="champ">
+        <label for="statut">Nouveau statut</label>
+        <select id="statut" name="statut"><option value="">Tous</option></select>
+      </div>
+      <div class="champ">
+        <label for="site_id">Site actuel</label>
+        <select id="site_id" name="site_id"><option value="">Tous</option></select>
+      </div>
+      <div class="champ">
+        <label for="date_debut">Du</label>
+        <input type="date" id="date_debut" name="date_debut">
+      </div>
+      <div class="champ">
+        <label for="date_fin">Au</label>
+        <input type="date" id="date_fin" name="date_fin">
+      </div>
+      <div class="champ champ-cases">
+        <label class="case"><input type="checkbox" name="changements" value="oui"> Sans les créations de fiche</label>
+      </div>
+    </form>
+
+    <div class="tableau-conteneur">
+      <table class="tableau">
+        <thead>
+          <tr>
+            <th scope="col">Date</th>
+            <th scope="col">Matériel</th>
+            <th scope="col">État</th>
+            <th scope="col">Statut</th>
+            <th scope="col">Commentaire</th>
+            <th scope="col">Par</th>
+          </tr>
+        </thead>
+        <tbody id="lignes"><tr><td colspan="6" class="cellule-vide">Chargement…</td></tr></tbody>
+      </table>
+    </div>
+    <div class="pagination" id="pagination"></div>
+  </main>
+</body>
+</html>

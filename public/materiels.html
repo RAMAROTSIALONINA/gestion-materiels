@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Matériels — Gestion des matériels</title>
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/css/style.css">
+  <script type="module" src="/js/materiels.js"></script>
+</head>
+<body>
+  <header class="entete" id="entete">
+    <a class="marque" href="/">Gestion des matériels</a>
+  </header>
+  <div id="messages" class="messages" aria-live="polite"></div>
+
+  <main class="contenu contenu-large">
+    <div class="barre-titre">
+      <h1>Matériels</h1>
+      <div class="actions-ligne">
+        <a href="/historique" class="bouton bouton-secondaire">Historique des états</a>
+        <button type="button" id="etiquettes" class="bouton bouton-secondaire" hidden disabled>Imprimer les étiquettes</button>
+        <button type="button" id="nouveau" class="bouton" hidden>Nouveau matériel</button>
+      </div>
+    </div>
+    <p class="aide" id="presentation">
+      Chaque matériel est suivi à l’unité, avec un code imprimé en code-barres. Pour ouvrir une fiche,
+      scannez son étiquette dans le champ de recherche.
+    </p>
+
+    <form class="filtres" id="filtres" role="search">
+      <div class="champ champ-large">
+        <label for="q">Rechercher ou scanner</label>
+        <input type="search" id="q" name="q" placeholder="Code, désignation, n° de série, marque, responsable" autocomplete="off" autofocus>
+      </div>
+      <div class="champ">
+        <label for="statut">Statut</label>
+        <select id="statut" name="statut"><option value="">Tous</option></select>
+      </div>
+      <div class="champ">
+        <label for="etat">État</label>
+        <select id="etat" name="etat"><option value="">Tous</option></select>
+      </div>
+      <div class="champ">
+        <label for="site_id">Site</label>
+        <select id="site_id" name="site_id"><option value="">Tous</option></select>
+      </div>
+      <div class="champ">
+        <label for="categorie_id">Catégorie</label>
+        <select id="categorie_id" name="categorie_id"><option value="">Toutes</option></select>
+      </div>
+      <div class="champ champ-cases">
+        <label class="case"><input type="checkbox" name="retard" value="oui"> Retour en retard</label>
+        <label class="case"><input type="checkbox" name="sans_etiquette" value="oui"> Sans étiquette</label>
+      </div>
+    </form>
+
+    <div class="tableau-conteneur">
+      <table class="tableau">
+        <thead>
+          <tr>
+            <th scope="col" class="colonne-choix" id="entete-choix" hidden>
+              <input type="checkbox" id="tout-choisir" aria-label="Choisir tous les matériels de la page">
+            </th>
+            <th scope="col">Code</th>
+            <th scope="col">Désignation</th>
+            <th scope="col">Catégorie</th>
+            <th scope="col">Site · service</th>
+            <th scope="col">Responsable</th>
+            <th scope="col">État</th>
+            <th scope="col">Statut</th>
+          </tr>
+        </thead>
+        <tbody id="lignes"><tr><td colspan="8" class="cellule-vide">Chargement…</td></tr></tbody>
+      </table>
+    </div>
+    <div class="pagination" id="pagination"></div>
+  </main>
+</body>
+</html>

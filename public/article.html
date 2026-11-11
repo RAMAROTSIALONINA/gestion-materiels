@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Fiche article — Gestion des matériels</title>
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/css/style.css">
+  <script type="module" src="/js/article.js"></script>
+</head>
+<body>
+  <header class="entete" id="entete">
+    <a class="marque" href="/">Gestion des matériels</a>
+  </header>
+  <div id="messages" class="messages" aria-live="polite"></div>
+
+  <main class="contenu contenu-large">
+    <p class="fil"><a href="/articles">‹ Articles</a></p>
+    <div class="barre-titre">
+      <div>
+        <h1 id="titre">Fiche article</h1>
+        <div class="badges" id="pastilles"></div>
+      </div>
+      <div class="actions-ligne" id="actions"></div>
+    </div>
+
+    <div class="grille-fiche" id="fiche"></div>
+
+    <section class="section-fiche">
+      <div class="barre-titre">
+        <h2>Stock et seuils par site</h2>
+        <button type="button" id="ajouter-seuil" class="bouton bouton-secondaire bouton-petit" hidden>Fixer un seuil pour un site</button>
+      </div>
+      <p class="aide">Le seuil d’un site s’ajoute au seuil global : l’alerte se déclenche quand le stock de ce site descend à ce niveau.</p>
+      <div class="tableau-conteneur">
+        <table class="tableau">
+          <thead><tr><th scope="col">Site</th><th scope="col" class="nombre">Stock</th><th scope="col" class="nombre">Seuil du site</th><th scope="col">Alerte</th><th scope="col"><span class="visuellement-cache">Actions</span></th></tr></thead>
+          <tbody id="sites"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="section-fiche">
+      <h2>Derniers mouvements</h2>
+      <div class="tableau-conteneur">
+        <table class="tableau">
+          <thead><tr><th scope="col">Date</th><th scope="col">Référence</th><th scope="col">Type</th><th scope="col" class="nombre">Quantité</th><th scope="col">Origine → destination</th><th scope="col">Bénéficiaire · motif</th><th scope="col">Statut</th></tr></thead>
+          <tbody id="mouvements"></tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+</body>
+</html>

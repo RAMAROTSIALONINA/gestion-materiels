@@ -1,0 +1,24 @@
+# Dépendances
+node_modules/
+
+# Secrets — ne jamais pousser sur GitHub
+.env
+.env.*
+!.env.example
+
+# Journaux et fichiers temporaires
+logs/
+*.log
+npm-debug.log*
+tmp/
+
+# Sauvegardes de base (à conserver ailleurs que dans le dépôt)
+*.dump
+*.backup
+sauvegardes/
+
+# Système et éditeurs
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/

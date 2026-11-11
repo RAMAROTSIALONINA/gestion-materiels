@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Fiche matériel — Gestion des matériels</title>
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/css/style.css">
+  <script type="module" src="/js/materiel.js"></script>
+</head>
+<body>
+  <header class="entete" id="entete">
+    <a class="marque" href="/">Gestion des matériels</a>
+  </header>
+  <div id="messages" class="messages" aria-live="polite"></div>
+
+  <main class="contenu contenu-large">
+    <p class="fil"><a href="/materiels">‹ Matériels</a></p>
+    <div class="barre-titre">
+      <div>
+        <h1 id="titre">Fiche matériel</h1>
+        <div class="badges" id="pastilles"></div>
+      </div>
+      <div class="actions-ligne" id="actions"></div>
+    </div>
+
+    <div class="grille-fiche" id="fiche"></div>
+
+    <section class="section-fiche">
+      <h2>Responsable et contrat</h2>
+      <div class="carte" id="responsable"></div>
+    </section>
+
+    <section class="section-fiche">
+      <h2>Historique des états et statuts</h2>
+      <div class="tableau-conteneur">
+        <table class="tableau">
+          <thead><tr><th scope="col">Date</th><th scope="col">État</th><th scope="col">Statut</th><th scope="col">Commentaire</th><th scope="col">Par</th></tr></thead>
+          <tbody id="historique"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="section-fiche">
+      <h2>Mouvements</h2>
+      <div class="tableau-conteneur">
+        <table class="tableau">
+          <thead><tr><th scope="col">Date</th><th scope="col">Référence</th><th scope="col">Type</th><th scope="col">Ticket</th><th scope="col">Origine → destination</th><th scope="col">Motif</th><th scope="col">Statut</th></tr></thead>
+          <tbody id="mouvements"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="section-fiche">
+      <h2>Affectations</h2>
+      <div class="tableau-conteneur">
+        <table class="tableau">
+          <thead><tr><th scope="col">Employé</th><th scope="col">Contrat</th><th scope="col">Remis le</th><th scope="col">Retour prévu</th><th scope="col">Rendu le</th><th scope="col">État au retour</th></tr></thead>
+          <tbody id="affectations"></tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+</body>
+</html>

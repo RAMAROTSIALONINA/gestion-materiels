@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Signalements — Gestion des matériels</title>
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/css/style.css">
+  <script type="module" src="/js/signalements.js"></script>
+</head>
+<body>
+  <header class="entete" id="entete">
+    <a class="marque" href="/">Gestion des matériels</a>
+  </header>
+  <div id="messages" class="messages" aria-live="polite"></div>
+
+  <main class="contenu contenu-large">
+    <h1>Signalements</h1>
+    <p class="aide">
+      Pannes, pertes et retours souhaités signalés par les employés sur leurs matériels. Prenez-les en charge,
+      puis clôturez-les en indiquant la suite donnée.
+    </p>
+    <p class="avertissement" id="desactive" hidden>
+      Le signalement est désactivé : les employés ne peuvent pas en créer de nouveaux.
+      <span id="lien-parametres" hidden>Il s’active dans <a href="/administration#parametres">Administration › Paramètres</a>.</span>
+    </p>
+
+    <form class="filtres" id="filtres">
+      <div class="champ">
+        <label for="statut">Statut</label>
+        <select id="statut" name="statut">
+          <option value="a_traiter">À traiter</option>
+          <option value="OUVERT">Ouverts</option>
+          <option value="PRIS_EN_CHARGE">Pris en charge</option>
+          <option value="CLOS">Clos</option>
+          <option value="">Tous</option>
+        </select>
+      </div>
+    </form>
+
+    <div class="tableau-conteneur">
+      <table class="tableau">
+        <thead>
+          <tr>
+            <th scope="col">Date</th>
+            <th scope="col">Matériel</th>
+            <th scope="col">Employé</th>
+            <th scope="col">Objet</th>
+            <th scope="col">Statut</th>
+            <th scope="col">Suite donnée</th>
+            <th scope="col"><span class="visuellement-cache">Actions</span></th>
+          </tr>
+        </thead>
+        <tbody id="lignes"><tr><td colspan="7" class="cellule-vide">Chargement…</td></tr></tbody>
+      </table>
+    </div>
+    <div class="pagination" id="pagination"></div>
+  </main>
+</body>
+</html>
