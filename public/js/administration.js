@@ -183,4 +183,11 @@ for (const bouton of document.querySelectorAll('[role="tab"]')) {
   });
 }
 element('ajouter').addEventListener('click', () => editer());
+// Le menu « Paramètres » de l'en-tête peut changer d'onglet sans recharger la page (#parametres).
+window.addEventListener('hashchange', () => {
+  const demande = window.location.hash.slice(1);
+  if (!Object.hasOwn(ONGLETS, demande) || demande === onglet) return;
+  onglet = demande;
+  charger().catch((erreur) => afficherMessage(erreur.message));
+});
 charger().catch((erreur) => afficherMessage(erreur.message));

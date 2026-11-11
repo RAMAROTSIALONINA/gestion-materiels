@@ -78,34 +78,117 @@ a { color: var(--primaire); }
   white-space: nowrap;
 }
 
-/* En-tête et menu */
+/* En-tête fixé en haut de l'écran : bande du haut (nom, recherche, compte),
+   puis bande du menu avec ses sous-menus. --hauteur-entete est posée par entete.js. */
+html { scroll-padding-top: calc(var(--hauteur-entete, 0px) + 12px); }
 .entete {
+  background: var(--primaire);
+  color: var(--primaire-texte);
+  position: sticky;
+  top: 0;
+  z-index: 50;
+}
+.entete-haut {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 8px 24px;
-  background: var(--primaire);
-  color: var(--primaire-texte);
-  padding: 12px 24px;
+  gap: 10px 24px;
+  padding: 10px 24px;
 }
 .entete .marque {
   color: inherit;
-  font-weight: 600;
+  font-size: 1.05rem;
+  font-weight: 700;
   letter-spacing: .01em;
+  margin-right: auto;
   text-decoration: none;
+  white-space: nowrap;
 }
-.navigation { display: flex; flex-wrap: wrap; gap: 4px 18px; flex: 1; }
-.navigation a {
+.entete > .marque { display: inline-block; padding: 12px 24px; }   /* page sans menu (404) */
+.navigation {
+  border-top: 1px solid rgb(127 127 127 / 30%);
+  column-gap: 6px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: stretch;
+  padding: 0 14px;
+}
+/* Entrées du menu : liens directs et titres des sous-menus, même apparence. */
+.navigation > a, .titre-groupe {
+  align-items: center;
+  background: none;
+  border: 0;
+  border-bottom: 3px solid transparent;
   color: var(--entete-texte-doux);
+  cursor: pointer;
+  display: inline-flex;
+  font: inherit;
+  font-size: .95rem;
+  gap: 8px;
+  padding: 10px 10px 7px;
   text-decoration: none;
-  padding: 2px 0;
-  border-bottom: 2px solid transparent;
+  white-space: nowrap;
 }
-.navigation a:hover { color: var(--primaire-texte); }
-.navigation a[aria-current="page"] { color: var(--primaire-texte); border-bottom-color: currentColor; }
-.compte { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 14px; font-size: .92rem; }
+.navigation > a:hover, .titre-groupe:hover, .groupe-menu.ouvert .titre-groupe { color: var(--primaire-texte); }
+.navigation > a[aria-current="page"], .groupe-menu.contient-courante .titre-groupe {
+  border-bottom-color: currentColor;
+  color: var(--primaire-texte);
+  font-weight: 600;
+}
+.navigation a:focus-visible, .titre-groupe:focus-visible { outline: 2px solid var(--primaire-texte); outline-offset: -2px; }
+.titre-groupe::after {                      /* petite flèche vers le bas */
+  border: solid currentColor;
+  border-width: 0 2px 2px 0;
+  content: "";
+  padding: 2.5px;
+  transform: translateY(-2px) rotate(45deg);
+}
+.groupe-menu.ouvert .titre-groupe::after { transform: translateY(1px) rotate(-135deg); }
+/* Sous-menu déroulant (ordinateur) */
+.groupe-menu { display: flex; position: relative; }
+.sous-menu {
+  background: var(--surface);
+  border: 1px solid var(--bordure);
+  border-radius: var(--rayon);
+  box-shadow: var(--ombre-dialogue);
+  display: none;
+  flex-direction: column;
+  left: 0;
+  min-width: 240px;
+  padding: 6px;
+  position: absolute;
+  top: calc(100% + 4px);
+  z-index: 60;
+}
+.groupe-menu.ouvert .sous-menu { display: flex; }
+.sous-menu a {
+  border-radius: 6px;
+  color: var(--texte);
+  padding: 9px 12px;
+  text-decoration: none;
+  white-space: nowrap;
+}
+.sous-menu a:hover { background: var(--surface-douce); }
+.sous-menu a[aria-current="page"] { background: var(--info-fond); color: var(--info); font-weight: 600; }
+.sous-menu a:focus-visible { outline: 2px solid var(--primaire); outline-offset: -2px; }
+.bouton-menu {
+  background: transparent;
+  border: 1px solid rgb(127 127 127 / 50%);
+  border-radius: 6px;
+  color: inherit;
+  cursor: pointer;
+  display: none;
+  font: inherit;
+  font-size: .92rem;
+  padding: 5px 12px;
+}
+.bouton-menu::before { content: "☰ "; }
+.entete.menu-ouvert .bouton-menu::before { content: "✕ "; }
+.compte { display: flex; flex-wrap: wrap; align-items: center; gap: 2px 16px; font-size: .9rem; }
+.compte-identite { display: flex; flex-direction: column; line-height: 1.25; }
+.compte-liens { display: flex; gap: 14px; }
 .compte-nom { font-weight: 600; }
-.compte-role { color: var(--entete-texte-doux); }
+.compte-role { color: var(--entete-texte-doux); font-size: .85rem; }
 .compte a, .lien-bouton { color: var(--primaire-texte); }
 .lien-bouton {
   background: none;
@@ -304,14 +387,14 @@ h2 { font-size: 1.1rem; margin: 0; }
 /* Messages à l'écran (jamais de alert()) */
 .messages {
   position: fixed;
-  top: 64px;
+  top: calc(var(--hauteur-entete, 56px) + 8px);   /* juste sous l'en-tête fixé */
   right: 16px;
   left: 16px;
   display: grid;
   gap: 8px;
   justify-items: end;
   pointer-events: none;
-  z-index: 10;
+  z-index: 70;
 }
 .message {
   display: flex;
@@ -528,11 +611,51 @@ a.bouton { display: inline-block; text-decoration: none; }
   .etiquette { border-color: transparent; }
 }
 
+/* Tablette et téléphone : menu replié derrière le bouton « Menu », en liste ;
+   chaque sous-menu devient un intertitre suivi de ses liens. */
+@media (max-width: 860px) {
+  .entete-haut { padding: 10px 16px; }
+  .bouton-menu { display: inline-block; }
+  .navigation { display: none; flex-direction: column; padding: 4px 16px 12px; }
+  .entete.menu-ouvert .navigation { display: flex; }
+  .entete.menu-ouvert { max-height: 100vh; overflow-y: auto; }
+  .groupe-menu { flex-direction: column; position: static; border-top: 1px solid rgb(127 127 127 / 30%); margin-top: 4px; padding-top: 4px; }
+  .titre-groupe {
+    cursor: default;
+    font-size: .78rem;
+    letter-spacing: .06em;
+    padding: 8px 10px 2px;
+    pointer-events: none;
+    text-transform: uppercase;
+  }
+  .titre-groupe::after { display: none; }
+  .groupe-menu.contient-courante .titre-groupe { border-bottom-color: transparent; color: var(--entete-texte-doux); }
+  .sous-menu { background: none; border: 0; box-shadow: none; display: flex; min-width: 0; padding: 0; position: static; }
+  .navigation > a, .sous-menu a {
+    border-bottom: 0;
+    border-left: 3px solid transparent;
+    border-radius: 0;
+    color: var(--entete-texte-doux);
+    padding: 9px 10px;
+  }
+  .sous-menu a:hover { background: none; color: var(--primaire-texte); }
+  .navigation > a[aria-current="page"], .sous-menu a[aria-current="page"] {
+    background: none;
+    border-left-color: currentColor;
+    color: var(--primaire-texte);
+  }
+}
+
 @media (max-width: 640px) {
-  .entete { padding: 12px 16px; }
-  .recherche-code, .recherche-code input { width: 100%; }
+  .entete-haut { gap: 10px 12px; }
+  .recherche-code { order: 3; width: 100%; }
+  .recherche-code input { width: 100%; }
+  .compte { order: 4; width: 100%; justify-content: space-between; }
+  /* Téléphone : seule la ligne « nom + Menu » reste fixée en haut ; la
+     recherche et le compte apparaissent quand on ouvre le menu. */
+  .entete.avec-menu:not(.menu-ouvert) .recherche-code,
+  .entete.avec-menu:not(.menu-ouvert) .compte { display: none; }
   .filtres .champ-large { grid-column: auto; }
-  .compte { width: 100%; }
   .carte { padding: 16px; }
   .liste-etat { grid-template-columns: 1fr; gap: 2px; }
   .liste-etat dd { margin-bottom: 10px; }
