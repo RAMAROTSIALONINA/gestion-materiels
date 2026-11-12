@@ -112,9 +112,14 @@ async function ecrireLignes(client, mouvementId, lignes) {
 
 // Validation : la base contrôle tout et applique les effets ; si le mouvement
 // demande une autorisation, celle ou celui qui valide l'autorise.
+// Décision du 12/11 (plus d'écran Réceptions) : un transfert est reçu en entier
+// au site de destination dès sa validation, par la personne qui l'envoie, à la
+// date du mouvement. Les transferts restés « en route » d'avant cette décision
+// se réceptionnent encore depuis leur fiche.
 export async function validerMouvement(client, mouvementId, utilisateur) {
   const { rows: [mouvement] } = await client.query(
-    `SELECT mv.statut, (t.autorisation_obligatoire OR mv.mouvement_corrige_id IS NOT NULL) AS autorisation
+    `SELECT mv.statut, mv.type_code, mv.date_mouvement,
+            (t.autorisation_obligatoire OR mv.mouvement_corrige_id IS NOT NULL) AS autorisation
        FROM mouvements mv JOIN types_mouvements t ON t.code = mv.type_code WHERE mv.id = $1 FOR UPDATE OF mv`,
     [mouvementId],
   );
@@ -124,6 +129,9 @@ export async function validerMouvement(client, mouvementId, utilisateur) {
     "UPDATE mouvements SET statut = 'VALIDE', autorise_par = CASE WHEN $2 THEN $3::bigint ELSE autorise_par END WHERE id = $1",
     [mouvementId, mouvement.autorisation, utilisateur.id],
   );
+  if (mouvement.type_code === 'TRANSFERT') {
+    await client.query("SELECT receptionner_transfert($1, '[]'::jsonb, NULL, $2::date)", [mouvementId, mouvement.date_mouvement]);
+  }
 }
 
 async function lireMouvement(id, client) {

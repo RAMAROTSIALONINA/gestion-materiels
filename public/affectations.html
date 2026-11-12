@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Affectations — Gestion des matériels</title>
+  <title>Remises et retours — Gestion des matériels</title>
   <link rel="icon" href="/favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="/css/style.css">
   <script type="module" src="/js/affectations.js"></script>
@@ -16,13 +16,34 @@
 
   <main class="contenu contenu-large">
     <div class="barre-titre">
-      <h1>Affectations</h1>
+      <h1>Remises et retours</h1>
       <button type="button" id="remettre" class="bouton" hidden>Remettre un matériel</button>
     </div>
     <p class="aide">
-      Matériels remis aux employés sous contrat, avec la date de retour prévue. Les retours en retard
-      apparaissent en premier.
+      Les matériels remis aux employés sous contrat, et leur retour. Scannez un matériel pour voir sa situation :
+      s’il est remis, enregistrez son retour ; s’il est disponible, remettez-le. Les retours en retard apparaissent en premier.
     </p>
+
+    <form class="carte bloc-scan" id="scan" role="search">
+      <div class="ligne-recherche">
+        <div class="champ">
+          <label for="code-scan">Matériel : scanner l’étiquette ou saisir le code</label>
+          <input id="code-scan" name="code" autocomplete="off" placeholder="MAT-2026-0001" maxlength="100">
+        </div>
+        <button type="submit" class="bouton">Voir sa situation</button>
+      </div>
+    </form>
+
+    <section class="carte situation" id="situation" aria-labelledby="titre-situation" hidden>
+      <div class="carte-titre">
+        <h2 id="titre-situation"></h2>
+        <span id="badge-situation"></span>
+      </div>
+      <dl class="liste-etat" id="details-situation"></dl>
+      <div class="actions-situation" id="actions-situation"></div>
+    </section>
+
+    <h2 class="titre-bloc">Matériels remis</h2>
 
     <form class="filtres" id="filtres" role="search">
       <div class="champ champ-large">
@@ -30,7 +51,7 @@
         <input type="search" id="q" name="q" placeholder="Code, désignation, matricule, nom, contrat" autocomplete="off">
       </div>
       <div class="champ">
-        <label for="etat">Affectations</label>
+        <label for="etat">Remises</label>
         <select id="etat" name="etat">
           <option value="en_cours">En cours</option>
           <option value="rendues">Rendues</option>

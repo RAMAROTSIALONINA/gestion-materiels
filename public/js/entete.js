@@ -31,8 +31,7 @@ const MENU = [
     titre: 'Opérations',
     liens: [
       { adresse: '/mouvements', libelle: 'Mouvements', icone: 'mouvements', droit: 'mouvements.lire' },
-      { adresse: '/receptions', libelle: 'Réceptions', icone: 'receptions', droit: 'transferts.receptionner' },
-      { adresse: '/affectations', libelle: 'Affectations', icone: 'affectations', droit: 'affectations.lire' },
+      { adresse: '/affectations', libelle: 'Remises et retours', icone: 'affectations', droit: 'affectations.lire' },
       { adresse: '/signalements', libelle: 'Signalements', icone: 'signalements', droit: 'signalements.traiter' },
     ],
   },

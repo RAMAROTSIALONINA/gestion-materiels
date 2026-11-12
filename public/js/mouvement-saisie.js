@@ -1,7 +1,10 @@
-// Saisie (ou modification d'un brouillon) d'un mouvement : les champs suivent
-// le type choisi ; articles ajoutés par recherche, matériels par scan.
+// Saisie (ou modification d'un brouillon) d'un mouvement. Depuis le 12/11, on
+// y arrive par une opération (Transférer, Réception, Sortie…) : le formulaire
+// ne propose que ses types et ses champs. Articles ajoutés par recherche,
+// matériels par scan.
 import { afficherMessage, api, creer, formaterNombre, ligneVide, montrerErreurFormulaire } from './app.js';
 import { initialiserEntete } from './entete.js';
+import { OPERATIONS, operationDuType } from './operations.js';
 
 const utilisateur = await initialiserEntete();
 const formulaire = document.getElementById('formulaire');
@@ -13,6 +16,7 @@ const idModifie = morceaux[3] === 'modifier' ? Number(morceaux[2]) : null;
 const parametres = new URLSearchParams(window.location.search);
 
 let types = [];
+let operation = null;            // clé de OPERATIONS (transfert, reception…)
 let articles = [];
 let lignes = [];                 // { article_id | materiel_id, code, designation, quantite, symbole, decimales, statut }
 const stocksParArticle = new Map();
@@ -43,6 +47,24 @@ async function preparer() {
   document.getElementById('liste-articles').replaceChildren(...articles.map((a) => creer('option', { value: `${a.code} — ${a.designation}` })));
 }
 
+// N° de bon ou de facture : seulement pour une réception (achat, don). N° de
+// ticket : seulement quand un matériel est dans les lignes — la base l'exige
+// alors pour les types qui le demandent. Un champ déjà rempli (brouillon
+// repris) reste affiché, pour ne jamais effacer une saisie sans la montrer.
+const rempli = (nom) => champ(nom).value.trim() !== '';
+const montrerBon = () => Boolean(type()?.code.startsWith('RECEPTION_')) || rempli('reference_externe');
+const montrerTicket = () => (Boolean(type()?.pour_materiels) && lignes.some((ligne) => ligne.materiel_id)) || rempli('numero_ticket');
+
+function majTicket() {
+  const t = type();
+  formulaire.querySelector('[data-si="ticket"]').hidden = !montrerTicket();
+  document.getElementById('libelle-ticket').textContent = t?.ticket_obligatoire ? 'N° de ticket *' : 'N° de ticket';
+}
+
+// Matériels acceptés : selon le type, sauf pour une réception (un nouveau
+// matériel se reçoit avec sa fiche, depuis Matériels › Nouveau matériel).
+const accepteMateriels = (t) => t.pour_materiels && !OPERATIONS[operation]?.sansMateriels;
+
 // Champs visibles et obligatoires selon le type de mouvement.
 function adapter() {
   const t = type();
@@ -52,23 +74,35 @@ function adapter() {
     destination: t.sens !== 'SORTIE',
     beneficiaire: t.beneficiaire_obligatoire,
     fournisseur: t.code.startsWith('RECEPTION_'),
-    ticket: t.pour_materiels,
+    bon: montrerBon(),
+    ticket: montrerTicket(),
     articles: t.pour_articles,
-    materiels: t.pour_materiels,
+    materiels: accepteMateriels(t),
   };
   for (const bloc of formulaire.querySelectorAll('[data-si]')) bloc.hidden = !visibles[bloc.dataset.si];
   document.getElementById('libelle-motif').textContent = t.motif_obligatoire ? 'Motif *' : 'Motif';
-  document.getElementById('libelle-ticket').textContent = t.ticket_obligatoire ? 'N° de ticket * (matériels)' : 'N° de ticket';
-  document.getElementById('aide-type').textContent = {
+  const aideSens = {
     ENTREE: 'Entrée : le stock du site de destination augmente.',
     SORTIE: 'Sortie : le stock du site d’origine baisse.',
-    TRANSFERT: 'Transfert en deux temps : envoi maintenant, puis réception confirmée par le site de destination.',
+    TRANSFERT: 'Transfert : le bien quitte le site d’origine et arrive aussitôt au site de destination.',
   }[t.sens];
+  document.getElementById('aide-type').textContent = aideSens;
+  // Une seule possibilité : pas de liste de types, l'explication passe sous le titre.
+  const champType = document.getElementById('champ-type');
+  champType.hidden = types.length === 1;
+  if (operation) {
+    const presentation = document.getElementById('presentation');
+    presentation.textContent = [OPERATIONS[operation].texte, champType.hidden ? aideSens : null, OPERATIONS[operation].note]
+      .filter(Boolean).join(' ');
+    presentation.hidden = false;
+  }
   const autorisation = t.autorisation_obligatoire;
   document.getElementById('note-autorisation').hidden = !autorisation;
-  document.getElementById('valider').hidden = autorisation && utilisateur.role !== 'ADMIN';
+  const valider = document.getElementById('valider');
+  valider.hidden = autorisation && utilisateur.role !== 'ADMIN';
+  valider.textContent = OPERATIONS[operation]?.boutons?.[t.code] ?? 'Enregistrer et valider';
   const avant = lignes.length;
-  lignes = lignes.filter((ligne) => (ligne.article_id ? t.pour_articles : t.pour_materiels));
+  lignes = lignes.filter((ligne) => (ligne.article_id ? t.pour_articles : accepteMateriels(t)));
   if (lignes.length < avant) afficherMessage('Certaines lignes ont été retirées : ce type de mouvement ne les accepte pas.');
   afficherLignes();
 }
@@ -83,6 +117,7 @@ async function stockOrigine(articleId) {
 }
 
 async function afficherLignes() {
+  majTicket();
   if (lignes.length === 0) {
     corpsLignes.replaceChildren(ligneVide(5, 'Aucune ligne pour l’instant.'));
     return;
@@ -193,8 +228,8 @@ formulaire.addEventListener('submit', async (evenement) => {
     service_beneficiaire_id: t.beneficiaire_obligatoire ? valeur('service_beneficiaire_id') : null,
     employe_beneficiaire_id: t.beneficiaire_obligatoire ? valeur('employe_beneficiaire_id') : null,
     origine: t.code.startsWith('RECEPTION_') ? valeur('origine') : null,
-    reference_externe: valeur('reference_externe'),
-    numero_ticket: t.pour_materiels ? valeur('numero_ticket') : null,
+    reference_externe: montrerBon() ? valeur('reference_externe') : null,
+    numero_ticket: montrerTicket() ? valeur('numero_ticket') : null,
     lignes: lignes.map((ligne) => (ligne.article_id
       ? { article_id: ligne.article_id, quantite: ligne.quantite }
       : { materiel_id: ligne.materiel_id })),
@@ -214,6 +249,17 @@ formulaire.addEventListener('submit', async (evenement) => {
   }
 });
 
+// Limite les types proposés à ceux de l'opération.
+function choisirOperation(cle) {
+  operation = cle;
+  // Dans l'ordre de l'opération (Transfert avant Sortie).
+  const ordre = OPERATIONS[cle].types;
+  types = types.filter((t) => ordre.includes(t.code)).sort((a, b) => ordre.indexOf(a.code) - ordre.indexOf(b.code));
+  champ('type_code').replaceChildren(...types.map((t) => creer('option', {
+    value: t.code, textContent: OPERATIONS[cle].libelles?.[t.code] ?? t.libelle,
+  })));
+}
+
 async function initialiser() {
   await preparer();
   if (idModifie) {
@@ -222,6 +268,8 @@ async function initialiser() {
       window.location.replace(`/mouvements/${idModifie}`);
       return;
     }
+    const cle = operationDuType(mouvement.type_code);
+    if (cle) choisirOperation(cle);
     document.getElementById('titre').textContent = `Modifier le brouillon ${mouvement.reference}`;
     document.title = `${mouvement.reference} — Gestion des matériels`;
     champ('type_code').value = mouvement.type_code;
@@ -236,7 +284,13 @@ async function initialiser() {
       quantite: ligne.article_id ? String(ligne.quantite) : 1, symbole: ligne.symbole, decimales: ligne.decimales, statut: ligne.materiel_statut,
     }));
   } else {
+    // Opération déduite du type demandé (lien d'une fiche : ?type=PERTE) ; sinon
+    // « Nouveau mouvement » : transfert entre sites ou sortie.
     const typeDemande = parametres.get('type');
+    const cle = operationDuType(typeDemande) ?? 'mouvement';
+    choisirOperation(cle);
+    document.getElementById('titre').textContent = OPERATIONS[cle].titre;
+    document.title = `${OPERATIONS[cle].titre} — Gestion des matériels`;
     if (types.some((t) => t.code === typeDemande)) champ('type_code').value = typeDemande;
   }
   adapter();

@@ -68,7 +68,7 @@ function actions(m) {
       liste.push(bouton('Annuler le mouvement', () => annuler(m, false), 'bouton bouton-danger'));
     }
     if (m.lie_a_une_affectation) {
-      note.textContent = 'Mouvement créé par une remise ou un retour de matériel : il se gère depuis l’écran Affectations.';
+      note.textContent = 'Mouvement créé par une remise ou un retour de matériel : il se gère depuis l’écran « Remises et retours ».';
       note.hidden = false;
     }
   }

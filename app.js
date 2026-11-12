@@ -30,11 +30,12 @@ const PAGES = [
   { chemin: '/articles/:id',   fichier: 'article.html',        acces: 'articles.lire' },
   { chemin: '/etiquettes',     fichier: 'etiquettes.html',     acces: 'materiels.gerer' },
   // L'ordre compte : « /mouvements/nouveau » avant « /mouvements/:id ».
+  // Décisions du 12/11 : plus d'écran Réceptions (un transfert est reçu dès
+  // l'envoi) ; « /affectations » est l'écran « Remises et retours ».
   { chemin: '/mouvements',              fichier: 'mouvements.html',       acces: 'mouvements.lire' },
   { chemin: '/mouvements/nouveau',      fichier: 'mouvement-saisie.html', acces: 'mouvements.saisir' },
   { chemin: '/mouvements/:id/modifier', fichier: 'mouvement-saisie.html', acces: 'mouvements.saisir' },
   { chemin: '/mouvements/:id',          fichier: 'mouvement.html',        acces: 'mouvements.lire' },
-  { chemin: '/receptions',              fichier: 'receptions.html',       acces: 'transferts.receptionner' },
   { chemin: '/affectations',            fichier: 'affectations.html',     acces: 'affectations.lire' },
   { chemin: '/mes-materiels',           fichier: 'mes-materiels.html',    acces: 'mes_materiels.lire' },
   { chemin: '/signalements',            fichier: 'signalements.html',     acces: 'signalements.traiter' },

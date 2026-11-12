@@ -3,7 +3,7 @@
 import assert from 'node:assert/strict';
 import { after, before, describe, test } from 'node:test';
 import { raisonSansBase, reinitialiserBaseDeTest } from './environnement.js';
-import { Navigateur, creerCompte, demarrerServeur } from './outils.js';
+import { Navigateur, creerCompte, demarrerServeur, transfertEnRoute } from './outils.js';
 
 const MDP = 'Essai-operations-2026';
 const aujourdhui = () => new Date(Date.now() + 3 * 3600 * 1000).toISOString().slice(0, 10);   // Antananarivo
@@ -191,11 +191,11 @@ describe('mouvements, réceptions, affectations, signalements', { skip: raisonSa
     assert.equal((await n.g1.requete(`/api/mouvements/${sortie.id}`)).donnees.mouvement.corrections[0].reference, inverse.reference);
   });
 
-  test('transfert d’articles : envoi, réception par le responsable du site destinataire, manquant motivé', async () => {
-    const envoi = (await mouvement(n.g1, {
+  test('transfert en route d’avant le 12/11 : réception par le responsable du site destinataire, manquant motivé', async () => {
+    const envoi = await transfertEnRoute(n.g1, {
       type_code: 'TRANSFERT', site_source_id: ids.siege, site_destination_id: ids.depot, motif: 'Réassort',
-      lignes: [{ article_id: ids.papier, quantite: 4 }], valider: true,
-    })).donnees.mouvement;
+      lignes: [{ article_id: ids.papier, quantite: 4 }],
+    });
     assert.equal(envoi.etat_transfert, 'EN_ROUTE');
     assert.equal(await stock(ids.papier, ids.siege), 16);
     const enRoute = (await n.g1.requete('/api/receptions')).donnees.transferts.find((t) => t.id === envoi.id);
@@ -216,15 +216,30 @@ describe('mouvements, réceptions, affectations, signalements', { skip: raisonSa
     assert.equal((await n.g1.requete(`/api/mouvements/${envoi.id}/receptionner`, { methode: 'POST', corps: {} })).donnees.erreur.code, 'ENREGISTREMENT_FIGE');
   });
 
-  test('transfert d’un matériel : ticket exigé, en transit, puis reçu au dépôt', async () => {
+  test('transfert d’un matériel : ticket exigé, reçu au dépôt dès l’envoi (décision du 12/11)', async () => {
     const corps = { type_code: 'TRANSFERT', site_source_id: ids.siege, site_destination_id: ids.depot, motif: 'Équipement du dépôt', lignes: [{ materiel_id: ids.ecran }], valider: true };
     assert.equal((await mouvement(n.g1, corps)).donnees.erreur.code, 'INFORMATION_MANQUANTE');
     const envoi = (await mouvement(n.g1, { ...corps, numero_ticket: 'TK-100' })).donnees.mouvement;
-    assert.equal(envoi.lignes[0].materiel_statut, 'EN_TRANSIT');
-    await n.g1.requete(`/api/mouvements/${envoi.id}/receptionner`, { methode: 'POST', corps: {} });
+    assert.deepEqual([envoi.etat_transfert, envoi.recu_par_nom, envoi.date_reception], ['RECU', 'Gestionnaire Un', envoi.date_mouvement]);
+    assert.equal(envoi.lignes[0].quantite_recue, 1);
     const fiche = (await n.g1.requete(`/api/materiels/${ids.ecran}`)).donnees.materiel;
     assert.equal(fiche.statut, 'DISPONIBLE');
     assert.equal(fiche.site_code, 'DEPOT');
+    assert.equal((await n.g1.requete(`/api/mouvements/${envoi.id}/receptionner`, { methode: 'POST', corps: {} })).donnees.erreur.code, 'ENREGISTREMENT_FIGE');
+  });
+
+  test('transfert d’articles validé depuis un brouillon : reçu aussitôt, stocks des deux sites à jour', async () => {
+    const depot = await stock(ids.papier, ids.depot);
+    const siege = await stock(ids.papier, ids.siege);
+    const brouillon = (await mouvement(n.g1, {
+      type_code: 'TRANSFERT', site_source_id: ids.siege, site_destination_id: ids.depot, motif: 'Réassort',
+      lignes: [{ article_id: ids.papier, quantite: 2 }],
+    })).donnees.mouvement;
+    assert.equal(brouillon.statut, 'BROUILLON');
+    const valide = (await n.g1.requete(`/api/mouvements/${brouillon.id}/valider`, { methode: 'POST' })).donnees.mouvement;
+    assert.equal(valide.etat_transfert, 'RECU');
+    assert.deepEqual([await stock(ids.papier, ids.siege), await stock(ids.papier, ids.depot)], [siege - 2, depot + 2]);
+    assert.ok(!(await n.g1.requete('/api/receptions')).donnees.transferts.some((t) => t.id === brouillon.id), 'plus rien à réceptionner');
   });
 
   test('Recette 8 — affectation sous contrat : statut « affecté », bénéficiaire sur la fiche', async () => {
@@ -343,19 +358,21 @@ describe('mouvements, réceptions, affectations, signalements', { skip: raisonSa
       const reponse = await navigateur.requete(chemin);
       return reponse.statut === 200 ? 200 : reponse.entetes.get('location');
     };
-    for (const chemin of ['/mouvements', '/mouvements/nouveau', '/mouvements/1', '/mouvements/1/modifier', '/receptions', '/affectations', '/signalements']) {
+    for (const chemin of ['/mouvements', '/mouvements/nouveau', '/mouvements/1', '/mouvements/1/modifier', '/affectations', '/signalements']) {
       assert.equal(await page(n.g1, chemin), 200, `gestionnaire : ${chemin}`);
     }
-    for (const chemin of ['/mouvements', '/mouvements/1', '/receptions', '/affectations', '/mes-materiels']) {
+    for (const chemin of ['/mouvements', '/mouvements/1', '/affectations', '/mes-materiels']) {
       assert.equal(await page(n.respInfo, chemin), 200, `responsable : ${chemin}`);
     }
     for (const chemin of ['/mouvements/nouveau', '/mouvements/1/modifier', '/signalements']) {
       assert.equal(await page(n.respInfo, chemin), '/', `responsable refusé : ${chemin}`);
     }
     assert.equal(await page(n.jean, '/mes-materiels'), 200);
-    for (const chemin of ['/mouvements', '/receptions', '/affectations', '/signalements']) {
+    for (const chemin of ['/mouvements', '/affectations', '/signalements']) {
       assert.equal(await page(n.jean, chemin), '/', `employé refusé : ${chemin}`);
     }
+    // Décision du 12/11 : plus d'écran Réceptions (un transfert est reçu dès l'envoi).
+    assert.equal((await n.g1.requete('/receptions')).statut, 404);
   });
 
   test('cohérence finale : stock tenu = stock recalculé, statuts cohérents', async () => {

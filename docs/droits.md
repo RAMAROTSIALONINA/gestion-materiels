@@ -35,8 +35,8 @@ Un compte de responsable est rattaché à un service ; un compte d'employé à u
 | Saisir et valider les mouvements | ✓ | ✓ | | |
 | Annuler un mouvement validé | ✓ | ✓ | | |
 | Autoriser une correction d'inventaire ou un mouvement inverse ¹ | ✓ | ✓ | | |
-| Confirmer la réception d'un transfert | ✓ | ✓ | site de son service ² | |
-| Consulter les affectations | ✓ | ✓ | son service | |
+| Confirmer la réception d'un transfert resté en route (d'avant le 12/11) ⁶ | ✓ | ✓ | site de son service ² | |
+| Consulter les remises et retours (écran « Remises et retours ») | ✓ | ✓ | son service | |
 | Remettre un matériel, enregistrer son retour, prolonger un contrat | ✓ | ✓ | | |
 | Consulter les matériels qui me sont affectés | ✓ | ✓ | ✓ | ✓ |
 | Signaler une panne, une perte ou un retour souhaité sur un de mes matériels ³ | ✓ | ✓ | ✓ | ✓ |
@@ -51,11 +51,13 @@ Un compte de responsable est rattaché à un service ; un compte d'employé à u
 
 ⁵ Phase 8 : ses matériels (ceux de son service), les mouvements et affectations de son service ou touchant le site de son service, le stock des articles du site de son service, les anomalies de son service. Le filtre « Service » ne lui est pas proposé ; un export porte la mention « Périmètre : votre service ». Le journal des opérations reste réservé à l'administrateur.
 
+⁶ Décision du 12/11 : un transfert est reçu en entier dès l'envoi, par la personne qui l'envoie ; l'écran Réceptions a été retiré. Seuls les transferts restés « en route » d'avant cette décision se réceptionnent encore, depuis leur fiche (bouton « Réceptionner »).
+
 Changer l'état d'un matériel (et l'envoyer en réparation ou l'en faire revenir) fait partie de « Créer et modifier les fiches matériels » : administrateur et gestionnaire. L'historique des états suit « Consulter les matériels » (le responsable : son service).
 
 La page **Paramètres** (12/11) s'ouvre pour toute personne connectée, mais ne montre que les cartes des écrans permis à son rôle (« Mon mot de passe » pour tous). Le lien « Paramètres » du menu n'apparaît que s'il y a autre chose que le mot de passe : administrateur (toutes les cartes) et gestionnaire (Employés).
 
-Tous les droits du tableau sont en place depuis la phase 8 (12/11). L'employé arrive directement sur **Mes matériels** ; son menu ne montre que cette page. Le responsable de service voit **Réceptions** (transferts arrivant au site de son service, via `peutReceptionner()`), et les mouvements et affectations de son service en lecture seule.
+Tous les droits du tableau sont en place depuis la phase 8 (12/11). L'employé arrive directement sur **Mes matériels** ; son menu ne montre que cette page. Le responsable de service voit les mouvements et les remises de son service en lecture seule (écrans **Mouvements** et **Remises et retours**).
 
 ## 3. Règles de connexion
 

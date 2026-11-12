@@ -68,3 +68,17 @@ export async function creerCompte({ nom, email, identifiant = null, role = 'GEST
   );
   return id;
 }
+
+// Transfert resté « en route », comme il en existait avant le 12/11 (réception
+// en deux temps) : enregistré en brouillon par l'API, puis validé directement
+// en base, sans la réception immédiate que fait désormais le serveur. Sert à
+// vérifier que ces anciens transferts se réceptionnent toujours.
+export async function transfertEnRoute(navigateur, corps) {
+  const brouillon = await navigateur.requete('/api/mouvements', { methode: 'POST', corps: { ...corps, valider: false } });
+  if (brouillon.statut >= 300) throw new Error(JSON.stringify(brouillon.donnees));
+  const { id } = brouillon.donnees.mouvement;
+  const { utilisateur } = (await navigateur.requete('/api/auth/moi')).donnees;
+  const { transaction } = await import('../database/db.js');
+  await transaction(utilisateur.id, (client) => client.query("UPDATE mouvements SET statut = 'VALIDE' WHERE id = $1", [id]));
+  return (await navigateur.requete(`/api/mouvements/${id}`)).donnees.mouvement;
+}

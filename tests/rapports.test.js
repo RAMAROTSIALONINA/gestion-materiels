@@ -6,7 +6,7 @@
 import assert from 'node:assert/strict';
 import { after, before, describe, test } from 'node:test';
 import { raisonSansBase, reinitialiserBaseDeTest } from './environnement.js';
-import { Navigateur, creerCompte, demarrerServeur } from './outils.js';
+import { Navigateur, creerCompte, demarrerServeur, transfertEnRoute } from './outils.js';
 
 const MDP = 'Essai-rapports-2026';
 const decaler = (jours) => new Date(Date.now() + 3 * 3600 * 1000 + jours * 86400000).toISOString().slice(0, 10);
@@ -70,10 +70,11 @@ describe('tableau de bord et rapports', { skip: raisonSansBase }, () => {
       type_code: 'CONSOMMATION', site_source_id: ids.siege, service_beneficiaire_id: ids.info, motif: 'Impressions',
       lignes: [{ article_id: ids.papier, quantite: 3 }], valider: true,
     });
-    const envoi = (await creer('/api/mouvements', {
+    // Un transfert d'avant le 12/11, resté en route, reçu avec un manquant (anomalie).
+    const envoi = await transfertEnRoute(n.admin, {
       type_code: 'TRANSFERT', site_source_id: ids.siege, site_destination_id: ids.depot, motif: 'Réassort',
-      lignes: [{ article_id: ids.papier, quantite: 4 }], valider: true,
-    })).mouvement;
+      lignes: [{ article_id: ids.papier, quantite: 4 }],
+    });
     await creer(`/api/mouvements/${envoi.id}/receptionner`, {
       quantites: [{ ligne_id: envoi.lignes[0].id, quantite_recue: 3 }], motif_ecart: 'Une boîte mouillée',
     });

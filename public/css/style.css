@@ -994,6 +994,15 @@ a.indicateur:hover {
 .alerte-quantite { align-items: flex-end; display: flex; flex-direction: column; font-size: .88rem; font-variant-numeric: tabular-nums; gap: 4px; white-space: nowrap; }
 .etat-serveur { align-items: center; display: flex; flex-wrap: wrap; gap: 10px; margin: 8px 0 0; }
 
+/* Saisie d'un mouvement ; Remises et retours (12/11) */
+.ticket-lignes { margin-top: 16px; }
+.ligne-recherche { align-items: flex-end; display: flex; flex-wrap: wrap; gap: 0 12px; }
+.ligne-recherche .champ { flex: 1 1 260px; }
+.ligne-recherche .bouton { margin-bottom: 16px; }
+.bloc-scan { margin-bottom: 16px; padding-bottom: 4px; }
+.situation { margin-bottom: 24px; }
+.actions-situation { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 4px; }
+
 /* Rapports (phase 8) */
 .description-rapport { color: var(--texte-doux); font-size: .92rem; margin: -8px 0 14px; }
 .tableau th.nombre { text-align: right; }

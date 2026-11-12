@@ -1,4 +1,6 @@
-// Liste des mouvements : recherche, filtres, brouillons à autoriser.
+// Liste des mouvements : recherche, filtres, brouillons à autoriser. « Nouveau
+// mouvement » ouvre un formulaire à une liste : transfert entre sites ou sortie
+// (décision du 12/11).
 import {
   afficherMessage, afficherPagination, api, badgesMouvement, creer, differer, ecrireFiltresAdresse,
   formaterDateCourte, ligneVide, lireFiltresAdresse,

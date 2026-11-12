@@ -17,6 +17,7 @@
   <main class="contenu contenu-large">
     <p class="fil"><a href="/mouvements">‹ Mouvements</a></p>
     <h1 id="titre">Nouveau mouvement</h1>
+    <p class="aide" id="presentation" hidden></p>
 
     <form id="formulaire" novalidate>
       <div id="erreur" class="erreur-formulaire" role="alert" hidden></div>
@@ -24,7 +25,7 @@
       <section class="carte">
         <h2>Opération</h2>
         <div class="grille-champs">
-          <div class="champ">
+          <div class="champ" id="champ-type">
             <label for="type_code">Type de mouvement *</label>
             <select id="type_code" name="type_code"></select>
             <p class="aide-champ" id="aide-type"></p>
@@ -57,13 +58,9 @@
             <label for="origine">Fournisseur ou donateur</label>
             <input id="origine" name="origine" maxlength="120" autocomplete="off">
           </div>
-          <div class="champ">
+          <div class="champ" data-si="bon">
             <label for="reference_externe">N° de bon ou de facture</label>
             <input id="reference_externe" name="reference_externe" maxlength="60" autocomplete="off">
-          </div>
-          <div class="champ" data-si="ticket">
-            <label for="numero_ticket" id="libelle-ticket">N° de ticket</label>
-            <input id="numero_ticket" name="numero_ticket" maxlength="60" autocomplete="off">
           </div>
         </div>
         <p class="avertissement" id="note-autorisation" hidden>
@@ -109,6 +106,14 @@
             </thead>
             <tbody id="lignes"></tbody>
           </table>
+        </div>
+        <!-- Le ticket apparaît dès qu'un matériel est dans les lignes. -->
+        <div class="grille-champs ticket-lignes" data-si="ticket">
+          <div class="champ">
+            <label for="numero_ticket" id="libelle-ticket">N° de ticket</label>
+            <input id="numero_ticket" name="numero_ticket" maxlength="60" autocomplete="off" aria-describedby="aide-ticket">
+            <p class="aide-champ" id="aide-ticket">Le ticket de la demande qui justifie le déplacement de ce matériel.</p>
+          </div>
         </div>
       </section>
 

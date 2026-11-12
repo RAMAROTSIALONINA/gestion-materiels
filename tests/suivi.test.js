@@ -6,7 +6,7 @@
 import assert from 'node:assert/strict';
 import { after, before, describe, test } from 'node:test';
 import { raisonSansBase, reinitialiserBaseDeTest } from './environnement.js';
-import { Navigateur, creerCompte, demarrerServeur } from './outils.js';
+import { Navigateur, creerCompte, demarrerServeur, transfertEnRoute } from './outils.js';
 
 const MDP = 'Essai-suivi-2026';
 const decaler = (jours) => new Date(Date.now() + 3 * 3600 * 1000 + jours * 86400000).toISOString().slice(0, 10);
@@ -151,14 +151,15 @@ describe('états, historiques, alertes, journal', { skip: raisonSansBase }, () =
       type_code: 'RECEPTION_ACHAT', date_mouvement: decaler(-10), site_destination_id: ids.siege,
       lignes: [{ article_id: ids.papier, quantite: 4 }], valider: true,
     });
-    const ancien = (await poster(n.g1, '/api/mouvements', {
+    // Transferts restés en route (d'avant le 12/11 : depuis, un transfert est reçu dès l'envoi).
+    const ancien = await transfertEnRoute(n.g1, {
       type_code: 'TRANSFERT', date_mouvement: decaler(-5), site_source_id: ids.siege, site_destination_id: ids.depot,
-      motif: 'Réassort', lignes: [{ article_id: ids.papier, quantite: 1 }], valider: true,
-    })).mouvement;
-    const recent = (await poster(n.g1, '/api/mouvements', {
+      motif: 'Réassort', lignes: [{ article_id: ids.papier, quantite: 1 }],
+    });
+    const recent = await transfertEnRoute(n.g1, {
       type_code: 'TRANSFERT', site_source_id: ids.siege, site_destination_id: ids.depot,
-      motif: 'Réassort', lignes: [{ article_id: ids.papier, quantite: 1 }], valider: true,
-    })).mouvement;
+      motif: 'Réassort', lignes: [{ article_id: ids.papier, quantite: 1 }],
+    });
     assert.equal((await n.g1.requete(`/api/articles/${ids.papier}/seuils/${ids.depot}`, { methode: 'PUT', corps: { seuil_minimum: 2 } })).statut, 200);
     const retard = (await poster(n.g1, '/api/affectations', {
       materiel_id: ids.imprimante, employe_id: ids.e2, numero_contrat: 'CT-200', date_remise: decaler(-10),
@@ -263,6 +264,15 @@ describe('états, historiques, alertes, journal', { skip: raisonSansBase }, () =
     assert.equal(await page(n.jean, '/historique'), '/');
     // Page Paramètres : ouverte à toute personne connectée (les cartes suivent les droits).
     for (const navigateur of [n.admin, n.g1, n.respInfo, n.jean]) assert.equal(await page(navigateur, '/parametres'), 200);
+    // Remises et retours (12/11) : l'écran Affectations ; l'écran Réceptions n'existe plus.
+    assert.equal(await page(n.g1, '/affectations'), 200);
+    assert.equal(await page(n.jean, '/affectations'), '/');
+    assert.equal((await n.g1.requete('/receptions')).statut, 404);
+    // Le scan d'un matériel remis donne l'affectation en cours ; sinon rien.
+    const { code } = (await n.g1.requete(`/api/materiels/${ids.imprimante}`)).donnees.materiel;
+    const remis = (await n.g1.requete(`/api/materiels/par-code?code=${code}`)).donnees.materiel;
+    const { rows: [enCours] } = await db.requete('SELECT id FROM affectations WHERE materiel_id = $1 AND date_retour IS NULL', [ids.imprimante]);
+    assert.equal(remis.affectation_id, enCours?.id ?? null);
   });
 
   test('cohérence finale : stock tenu = stock recalculé, statuts cohérents', async () => {

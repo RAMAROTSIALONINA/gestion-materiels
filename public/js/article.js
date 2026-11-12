@@ -32,7 +32,10 @@ async function charger() {
     const lien = (texte, type) => creer('a', {
       className: 'bouton bouton-secondaire', href: `/mouvements/nouveau?type=${type}&article=${a.id}`, textContent: texte,
     });
-    actions.push(lien('Entrée', 'RECEPTION_ACHAT'), lien('Sortie', 'CONSOMMATION'), lien('Transfert', 'TRANSFERT'));
+    // Décision du 12/11 : l'entrée de stock, la perte ou casse et la correction
+    // ne sont plus dans Mouvements ; elles se font d'ici.
+    actions.push(lien('Entrée de stock', 'RECEPTION_ACHAT'), lien('Sortie', 'CONSOMMATION'), lien('Transfert', 'TRANSFERT'),
+      lien('Perte ou casse', 'CASSE'), lien('Correction', 'CORRECTION_PLUS'));
   }
   if (gestion) {
     const modifier = creer('button', { type: 'button', className: 'bouton', textContent: 'Modifier' });

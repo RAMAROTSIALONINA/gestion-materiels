@@ -38,7 +38,7 @@ const RUBRIQUES = {
       creer('div', {}, creer('div', { textContent: a.employe }), creer('div', { className: 'secondaire', textContent: [a.matricule, a.service].filter(Boolean).join(' · ') })),
       a.numero_contrat,
       creer('span', {}, formaterDateCourte(a.date_retour_prevue), ' ', badge(`${jours(a.jours_de_retard)} de retard`, 'badge-danger')),
-      peut('affectations.gerer') && petitLien('Enregistrer le retour', `/affectations?retour=${a.affectation_id}`),
+      peut('affectations.gerer') && petitLien('Enregistrer le retour', `/affectations?code=${encodeURIComponent(a.code)}`),
     ],
   },
   retours_proches: {
@@ -54,14 +54,14 @@ const RUBRIQUES = {
     ],
   },
   transferts: {
-    aide: 'Envoyés mais pas encore réceptionnés : vérifiez avec le site de destination.',
+    aide: 'Envoyés avant le 12/11 (réception en deux temps) et pas encore réceptionnés : ouvrez-les pour confirmer leur arrivée. Depuis, un transfert arrive dès l’envoi.',
     colonnes: ['Transfert', 'Origine → destination', 'Envoyé le', 'Contenu', ''],
     cellules: (t) => [
       creer('strong', {}, lien(t.reference, `/mouvements/${t.id}`)),
       `${t.site_origine} → ${t.site_destination}`,
       creer('span', {}, formaterDateCourte(t.date_envoi), ' ', badge(`en route depuis ${jours(t.jours_en_route)}`, 'badge-attente')),
       `${t.premiere_ligne}${t.nb_lignes > 1 ? ` + ${t.nb_lignes - 1}` : ''}`,
-      peut('transferts.receptionner') && petitLien('Réceptions', '/receptions'),
+      peut('transferts.receptionner') && petitLien('Réceptionner', `/mouvements/${t.id}`),
     ],
   },
   reparations: {

@@ -110,7 +110,7 @@ npm test
 | Commande | Ce qu'elle vérifie | Résultat attendu |
 |---|---|---|
 | `npm run db:verifier` | Les règles tenues par la base (scénarios de recette 3 à 11, décisions du 11/11), sur la base de **test** | `123 contrôles réussis.` |
-| `npm test` | Le serveur : santé, sécurité, erreurs, transactions, connexion, sessions, droits, matériels, articles, mouvements, réceptions, affectations, signalements, états, alertes, journal, tableau de bord, rapports et exports | `pass 98`, `fail 0` |
+| `npm test` | Le serveur : santé, sécurité, erreurs, transactions, connexion, sessions, droits, matériels, articles, mouvements, réceptions, affectations, signalements, états, alertes, journal, tableau de bord, rapports et exports | `pass 99`, `fail 0` |
 
 Sans `DATABASE_URL_TEST`, `npm test` passe seulement les tests qui n'ont pas besoin de base, et le signale.
 

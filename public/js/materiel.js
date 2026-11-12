@@ -47,7 +47,7 @@ async function charger() {
     if (m.statut === 'DISPONIBLE' && ['NEUF', 'BON', 'MOYEN'].includes(m.etat)) {
       actions.push(lien('Remettre à un employé', `/affectations?remettre=${m.id}`));
     }
-    if (m.statut === 'AFFECTE' && enCours) actions.push(lien('Enregistrer le retour', `/affectations?retour=${enCours.id}`));
+    if (m.statut === 'AFFECTE' && enCours) actions.push(lien('Enregistrer le retour', `/affectations?code=${encodeURIComponent(m.code)}`));
   }
   if (aLeDroit(utilisateur, 'mouvements.saisir') && ['DISPONIBLE', 'EN_REPARATION'].includes(m.statut)) {
     const nouveau = (type) => `/mouvements/nouveau?type=${type}&materiel=${m.id}`;

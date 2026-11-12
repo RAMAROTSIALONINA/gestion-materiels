@@ -132,7 +132,7 @@ routeurMateriels.get('/materiels/par-code', lecture, async (req, res) => {
   const valeurs = [code];
   const limite = conditionPerimetre(req.utilisateur, valeurs);
   const { rows: [trouve] } = await requete(
-    `SELECT v.id, v.code, v.designation, v.site_id, v.site, v.etat, v.statut, v.responsable
+    `SELECT v.id, v.code, v.designation, v.site_id, v.site, v.etat, v.statut, v.responsable, v.affectation_id
        FROM v_materiels v WHERE v.code = $1 ${limite ? `AND ${limite}` : ''}`,
     valeurs,
   );
