@@ -36,26 +36,27 @@ async function charger() {
     page: page > 1 ? page : '',
   });
   const reponse = await api(`/mouvements?${parametres}`);
-  lignes.replaceChildren(...(reponse.mouvements.length ? reponse.mouvements.map(ligne) : [ligneVide(8, 'Aucun mouvement ne correspond.')]));
+  lignes.replaceChildren(...(reponse.mouvements.length ? reponse.mouvements.map(ligne) : [ligneVide(6, 'Aucun mouvement ne correspond.')]));
   afficherPagination(document.getElementById('pagination'), reponse, (cible) => {
     page = cible;
     charger().catch((erreur) => afficherMessage(erreur.message));
   });
 }
 
+// Six colonnes : la référence porte sa date et son ticket, les lieux portent le bénéficiaire.
 function ligne(m) {
   const autres = m.nb_lignes > 1 ? ` + ${m.nb_lignes - 1} autre${m.nb_lignes > 2 ? 's' : ''}` : '';
+  const lieux = [m.site_origine, m.site_destination].filter(Boolean).join(' → ');
   return creer('tr', {},
-    creer('td', { textContent: formaterDateCourte(m.date_mouvement) }),
     creer('td', {}, creer('strong', {}, creer('a', { href: `/mouvements/${m.id}`, textContent: m.reference })),
-      m.numero_ticket && creer('div', { className: 'secondaire', textContent: `Ticket ${m.numero_ticket}` })),
+      creer('div', { className: 'secondaire', textContent: [formaterDateCourte(m.date_mouvement), m.numero_ticket && `Ticket ${m.numero_ticket}`].filter(Boolean).join(' · ') })),
     creer('td', { textContent: m.type }),
-    creer('td', {}, creer('div', { textContent: `${m.premiere_ligne ?? '—'}${autres}` }),
+    creer('td', { className: 'cellule-principale' }, creer('div', { textContent: `${m.premiere_ligne ?? '—'}${autres}` }),
       m.motif && creer('div', { className: 'secondaire', textContent: m.motif })),
-    creer('td', { textContent: [m.site_origine, m.site_destination].filter(Boolean).join(' → ') || '—' }),
-    creer('td', { textContent: m.beneficiaire ?? '—' }),
+    creer('td', {}, creer('div', { textContent: lieux || '—' }),
+      m.beneficiaire && creer('div', { className: 'secondaire', textContent: `Pour ${m.beneficiaire}` })),
     creer('td', {}, badgesMouvement(m)),
-    creer('td', { textContent: m.cree_par_nom }));
+    creer('td', { className: 'secondaire', textContent: m.cree_par_nom }));
 }
 
 const recharger = () => {

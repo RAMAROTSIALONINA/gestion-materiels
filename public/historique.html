@@ -25,30 +25,28 @@
     <form class="filtres" id="filtres" role="search">
       <div class="champ champ-large">
         <label for="q">Rechercher</label>
-        <input type="search" id="q" name="q" placeholder="Code, désignation, commentaire" autocomplete="off">
+        <input type="search" id="q" name="q" placeholder="Code, désignation…" title="Code, désignation ou commentaire" autocomplete="off">
       </div>
       <div class="champ">
-        <label for="etat">Nouvel état</label>
+        <label for="etat">État</label>
         <select id="etat" name="etat"><option value="">Tous</option></select>
       </div>
       <div class="champ">
-        <label for="statut">Nouveau statut</label>
+        <label for="statut">Statut</label>
         <select id="statut" name="statut"><option value="">Tous</option></select>
       </div>
       <div class="champ">
-        <label for="site_id">Site actuel</label>
+        <label for="site_id">Site</label>
         <select id="site_id" name="site_id"><option value="">Tous</option></select>
       </div>
-      <div class="champ">
+      <div class="champ champ-periode">
         <label for="date_debut">Du</label>
         <input type="date" id="date_debut" name="date_debut">
-      </div>
-      <div class="champ">
-        <label for="date_fin">Au</label>
+        <label for="date_fin">au</label>
         <input type="date" id="date_fin" name="date_fin">
       </div>
       <div class="champ champ-cases">
-        <label class="case"><input type="checkbox" name="changements" value="oui"> Sans les créations de fiche</label>
+        <label class="case"><input type="checkbox" name="changements" value="oui"> Sans les créations</label>
       </div>
     </form>
 

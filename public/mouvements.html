@@ -27,7 +27,7 @@
     <form class="filtres" id="filtres" role="search">
       <div class="champ champ-large">
         <label for="q">Rechercher</label>
-        <input type="search" id="q" name="q" placeholder="Référence, ticket, motif, article, matériel" autocomplete="off">
+        <input type="search" id="q" name="q" placeholder="Référence, ticket…" title="Référence, ticket, motif, article ou matériel" autocomplete="off">
       </div>
       <div class="champ">
         <label for="type_code">Type</label>
@@ -42,17 +42,15 @@
           <option value="ANNULE">Annulés</option>
         </select>
       </div>
-      <div class="champ">
+      <div class="champ champ-periode">
         <label for="date_debut">Du</label>
         <input type="date" id="date_debut" name="date_debut">
-      </div>
-      <div class="champ">
-        <label for="date_fin">Au</label>
+        <label for="date_fin">au</label>
         <input type="date" id="date_fin" name="date_fin">
       </div>
       <div class="champ champ-cases">
-        <label class="case"><input type="checkbox" name="en_route" value="oui"> Transferts en route</label>
-        <label class="case" id="case-autoriser" hidden><input type="checkbox" name="a_autoriser" value="oui"> À autoriser par moi</label>
+        <label class="case" title="Transferts envoyés, pas encore réceptionnés"><input type="checkbox" name="en_route" value="oui"> En route</label>
+        <label class="case" id="case-autoriser" title="Corrections et mouvements inverses à autoriser par moi" hidden><input type="checkbox" name="a_autoriser" value="oui"> À autoriser</label>
       </div>
     </form>
 
@@ -60,17 +58,15 @@
       <table class="tableau">
         <thead>
           <tr>
-            <th scope="col">Date</th>
-            <th scope="col">Référence</th>
+            <th scope="col">Mouvement</th>
             <th scope="col">Type</th>
             <th scope="col">Contenu</th>
-            <th scope="col">Origine → destination</th>
-            <th scope="col">Bénéficiaire</th>
+            <th scope="col">Lieux</th>
             <th scope="col">Statut</th>
             <th scope="col">Saisi par</th>
           </tr>
         </thead>
-        <tbody id="lignes"><tr><td colspan="8" class="cellule-vide">Chargement…</td></tr></tbody>
+        <tbody id="lignes"><tr><td colspan="6" class="cellule-vide">Chargement…</td></tr></tbody>
       </table>
     </div>
     <div class="pagination" id="pagination"></div>

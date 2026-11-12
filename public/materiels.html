@@ -31,7 +31,7 @@
     <form class="filtres" id="filtres" role="search">
       <div class="champ champ-large">
         <label for="q">Rechercher ou scanner</label>
-        <input type="search" id="q" name="q" placeholder="Code, désignation, n° de série, marque, responsable" autocomplete="off" autofocus>
+        <input type="search" id="q" name="q" placeholder="Code, désignation, n° de série…" title="Code, désignation, n° de série, marque ou responsable" autocomplete="off" autofocus>
       </div>
       <div class="champ">
         <label for="statut">Statut</label>
@@ -50,7 +50,7 @@
         <select id="categorie_id" name="categorie_id"><option value="">Toutes</option></select>
       </div>
       <div class="champ champ-cases">
-        <label class="case"><input type="checkbox" name="retard" value="oui"> Retour en retard</label>
+        <label class="case" title="Date de retour prévue dépassée"><input type="checkbox" name="retard" value="oui"> En retard</label>
         <label class="case"><input type="checkbox" name="sans_etiquette" value="oui"> Sans étiquette</label>
       </div>
     </form>

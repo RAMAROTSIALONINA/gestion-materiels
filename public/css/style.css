@@ -420,9 +420,9 @@ body.avec-barre .entete .marque { display: none; }   /* le nom est déjà en hau
 .contenu-etroit { max-width: 520px; }
 .contenu-large { max-width: 1120px; }
 
-h1 { font-size: 1.6rem; margin: 0 0 8px; }
+h1 { font-size: 1.6rem; letter-spacing: -.01em; margin: 0 0 6px; }
 h2 { font-size: 1.1rem; margin: 0; }
-.aide { color: var(--texte-doux); margin: 0 0 24px; }
+.aide { color: var(--texte-doux); font-size: .95rem; margin: 0 0 22px; max-width: 85ch; }
 .petite { font-size: .88rem; }
 .secondaire { color: var(--texte-doux); font-size: .9rem; }
 
@@ -560,17 +560,27 @@ h2 { font-size: 1.1rem; margin: 0; }
   overflow-x: auto;
   position: relative;        /* les éléments positionnés du tableau restent dans son cadre : la page ne s'élargit pas sur téléphone */
 }
-.tableau { border-collapse: collapse; width: 100%; font-size: .95rem; }
-.tableau th, .tableau td { padding: 10px 14px; text-align: left; vertical-align: top; }
+.tableau { border-collapse: collapse; width: 100%; font-size: .94rem; }
+.tableau th, .tableau td { padding: 12px 16px; text-align: left; vertical-align: middle; }
 .tableau th {
   background: var(--surface-douce);
   border-bottom: 1px solid var(--bordure);
   color: var(--texte-doux);
-  font-size: .82rem;
+  font-size: .72rem;
   font-weight: 600;
+  letter-spacing: .05em;
+  padding-bottom: 10px;
+  padding-top: 10px;
+  text-transform: uppercase;
   white-space: nowrap;
 }
 .tableau tbody tr + tr td { border-top: 1px solid var(--bordure); }
+.tableau tbody tr:hover > td:not(.cellule-vide) { background: var(--surface-douce); }
+/* Codes et références : en gras, sans soulignement, jamais coupés sur deux lignes. */
+.tableau a:not(.bouton) { font-weight: 600; text-decoration: none; }
+.tableau a:not(.bouton):hover { text-decoration: underline; }
+.tableau strong a { white-space: nowrap; }
+.tableau .cellule-principale { min-width: 200px; }   /* la colonne qui décrit la ligne ne s’écrase pas */
 .cellule-vide { color: var(--texte-doux); text-align: center !important; padding: 28px !important; }
 .actions-ligne { display: flex; flex-wrap: wrap; gap: 6px; justify-content: flex-end; }
 
@@ -653,15 +663,86 @@ h2 { font-size: 1.1rem; margin: 0; }
 .onglets [role="tab"][aria-selected="true"] { border-bottom-color: var(--primaire); color: var(--primaire); }
 .onglets [role="tab"]:focus-visible { outline: 3px solid var(--primaire-survol); outline-offset: -3px; }
 
-/* Filtres des listes */
+/* Filtres des listes : une bande compacte posée sur le tableau, dans la même
+   carte. Chaque filtre est une case arrondie, son libellé en tête et sa valeur
+   ensuite ; la recherche porte une loupe ; les cases à cocher deviennent des
+   boutons à bascule. */
 .filtres {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
-  gap: 0 14px;
-  align-items: end;
-  margin-bottom: 8px;
+  align-items: center;
+  background: var(--surface);
+  border: 1px solid var(--bordure);
+  border-bottom: 0;
+  border-radius: var(--rayon) var(--rayon) 0 0;
+  display: flex;
+  flex-wrap: wrap;
+  font-size: .85rem;
+  gap: 6px;
+  padding: 10px 12px;
 }
-.filtres .champ-large { grid-column: span 2; }
+.filtres + .tableau-conteneur { border-radius: 0 0 var(--rayon) var(--rayon); }
+.filtres .champ {
+  align-items: center;
+  background: var(--surface);
+  border: 1px solid var(--bordure);
+  border-radius: 7px;
+  display: flex;
+  flex: 0 1 auto;
+  gap: 0;
+  height: 34px;
+  margin: 0;
+  min-width: 0;
+  padding-left: 10px;
+  position: relative;
+}
+.filtres .champ:hover { border-color: color-mix(in srgb, var(--primaire) 40%, var(--bordure)); }
+.filtres .champ:focus-within { border-color: var(--primaire); box-shadow: 0 0 0 3px color-mix(in srgb, var(--primaire) 18%, transparent); }
+.filtres .champ > label { color: var(--texte-doux); font-size: .8rem; font-weight: 500; white-space: nowrap; }
+.filtres .champ input, .filtres .champ select {
+  background: transparent;
+  border: 0;
+  color: var(--texte);
+  font-size: .85rem;
+  height: 32px;
+  min-width: 0;
+  padding: 0 6px;
+  width: auto;
+}
+.filtres .champ input:focus, .filtres .champ select:focus { outline: none; }
+.filtres .champ select { cursor: pointer; max-width: 115px; text-overflow: ellipsis; }
+.filtres .champ input[type="date"] { padding-right: 4px; width: 112px; }
+/* Période : « Du [date] au [date] » dans une seule case. */
+.filtres .champ-periode > label + input { margin-right: 2px; }
+/* Recherche : prend la place qui reste, une loupe à la place du libellé (gardé pour les lecteurs d'écran). */
+.filtres .champ:has(input[type="search"]) {
+  background: var(--surface) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%237c8595' stroke-width='2' stroke-linecap='round'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cpath d='m21 21-4.3-4.3'/%3E%3C/svg%3E") no-repeat 10px center / 15px;
+  flex: 1 1 140px;
+  padding-left: 26px;
+}
+.filtres .champ:has(input[type="search"]) > label {
+  clip-path: inset(50%);
+  height: 1px;
+  overflow: hidden;
+  position: absolute;
+  white-space: nowrap;
+  width: 1px;
+}
+.filtres .champ input[type="search"] { flex: 1; }
+.filtres .champ.champ-cases { background: none; border: 0; box-shadow: none; flex-wrap: wrap; gap: 6px; height: auto; padding: 0; }
+.filtres .case {
+  background: var(--surface);
+  border: 1px solid var(--bordure);
+  border-radius: 999px;
+  color: var(--texte);
+  font-size: .85rem;
+  gap: 6px;
+  height: 34px;
+  padding: 0 11px;
+  white-space: nowrap;
+}
+.filtres .case:hover { border-color: var(--primaire); }
+.filtres .case:has(input:checked) { background: var(--info-fond); border-color: var(--info); color: var(--info); }
+.filtres .case:has(input:focus-visible) { outline: 2px solid var(--primaire); outline-offset: 2px; }
+.filtres .case input { flex: none; height: 14px; padding: 0; width: 14px; }
 .champ-cases { display: flex; flex-wrap: wrap; gap: 6px 16px; padding-bottom: 10px; }
 .case { display: inline-flex; align-items: center; gap: 8px; font-weight: 400 !important; cursor: pointer; }
 .case input { width: 18px; height: 18px; margin: 0; accent-color: var(--primaire); }
@@ -875,7 +956,12 @@ a.bouton { display: inline-block; text-decoration: none; }
   .entete-droite { gap: 4px; }
   .bouton-compte .chevron { display: none; }
   .contenu { padding: 24px 16px 40px; }
-  .filtres .champ-large { grid-column: auto; }
+  /* Filtres sur téléphone : un par ligne, la période sur toute la largeur. */
+  .filtres { padding: 10px; }
+  .filtres .champ { flex: 1 1 100%; }
+  .filtres .champ-periode { flex: 1 1 100%; }
+  .filtres .champ input:not([type="checkbox"]), .filtres .champ select { flex: 1; max-width: none; }
+  .filtres .case { flex: 1 1 auto; justify-content: center; }
   .carte { padding: 16px; }
   .liste-etat { grid-template-columns: 1fr; gap: 2px; }
   .liste-etat dd { margin-bottom: 10px; }
