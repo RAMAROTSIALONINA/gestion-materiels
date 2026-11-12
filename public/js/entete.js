@@ -1,56 +1,100 @@
-// En-tête commun des pages connectées, fixé en haut de l'écran, en deux
-// bandes : en haut le nom de l'application, la recherche par code (lecteur de
-// code-barres) et le compte ; dessous le menu, classé en sous-menus selon les
-// droits. Sur téléphone, tout se déplie avec le bouton « Menu ».
+// Cadre commun des pages connectées :
+// - à gauche, une barre latérale sombre : le menu par rubriques, avec une icône
+//   par lien, puis le compte et la déconnexion ;
+// - en haut, une barre fixée : message d'accueil, recherche par code (lecteur de
+//   code-barres), cloche des alertes et menu du compte.
+// Sur tablette et téléphone, la barre latérale se replie et s'ouvre avec le
+// bouton « Menu » ; sur téléphone, la recherche passe dans la barre latérale.
 import { afficherMessage, api, creer } from './app.js';
+import { icone } from './icones.js';
 
-// Entrées directes, puis sous-menus. Un sous-menu qui n'a qu'un lien visible
-// pour ce compte s'affiche comme un lien simple.
+// Menu de la barre latérale, par rubriques. « Paramètres » est ajouté à la fin
+// s'il y a au moins une carte à montrer sur la page Paramètres.
 const MENU = [
-  { adresse: '/', libelle: 'Accueil', saufRole: 'EMPLOYE' },
-  { adresse: '/alertes', libelle: 'Alertes', droit: 'alertes.lire', pastille: true },
   {
-    groupe: 'Parc et stocks',
     liens: [
-      { adresse: '/materiels', libelle: 'Matériels', droit: 'materiels.lire' },
-      { adresse: '/historique', libelle: 'Historique des états', droit: 'materiels.lire' },
-      { adresse: '/articles', libelle: 'Articles', droit: 'articles.lire' },
-      { adresse: '/mes-materiels', libelle: 'Mes matériels', droit: 'mes_materiels.lire', employe: true },
+      { adresse: '/', libelle: 'Accueil', icone: 'accueil', saufRole: 'EMPLOYE' },
+      { adresse: '/alertes', libelle: 'Alertes', icone: 'alertes', droit: 'alertes.lire', pastille: true },
     ],
   },
   {
-    groupe: 'Opérations',
+    titre: 'Parc et stocks',
     liens: [
-      { adresse: '/mouvements', libelle: 'Mouvements', droit: 'mouvements.lire' },
-      { adresse: '/receptions', libelle: 'Réceptions', droit: 'transferts.receptionner' },
-      { adresse: '/affectations', libelle: 'Affectations', droit: 'affectations.lire' },
-      { adresse: '/signalements', libelle: 'Signalements', droit: 'signalements.traiter' },
+      { adresse: '/materiels', libelle: 'Matériels', icone: 'materiels', droit: 'materiels.lire' },
+      { adresse: '/historique', libelle: 'Historique des états', icone: 'historique', droit: 'materiels.lire' },
+      { adresse: '/articles', libelle: 'Articles', icone: 'articles', droit: 'articles.lire' },
+      { adresse: '/mes-materiels', libelle: 'Mes matériels', icone: 'mes-materiels', droit: 'mes_materiels.lire', employe: true },
     ],
   },
   {
-    groupe: 'Paramètres',
+    titre: 'Opérations',
     liens: [
-      { adresse: '/employes', libelle: 'Employés', droit: 'employes.gerer' },
-      { adresse: '/administration', libelle: 'Sites, services et catégories', droit: 'referentiels.gerer' },
-      { adresse: '/administration#parametres', libelle: 'Réglages de l’application', droit: 'parametres.gerer' },
-      { adresse: '/utilisateurs', libelle: 'Utilisateurs', droit: 'utilisateurs.gerer' },
-      { adresse: '/journal', libelle: 'Journal des opérations', droit: 'journal.lire' },
+      { adresse: '/mouvements', libelle: 'Mouvements', icone: 'mouvements', droit: 'mouvements.lire' },
+      { adresse: '/receptions', libelle: 'Réceptions', icone: 'receptions', droit: 'transferts.receptionner' },
+      { adresse: '/affectations', libelle: 'Affectations', icone: 'affectations', droit: 'affectations.lire' },
+      { adresse: '/signalements', libelle: 'Signalements', icone: 'signalements', droit: 'signalements.traiter' },
     ],
   },
 ];
 
-// Nombre d'alertes à traiter, affiché dans le menu. Gardé deux minutes dans
-// l'onglet (par utilisateur) pour ne pas interroger le serveur à chaque page.
+// Cartes de la page Paramètres, dans l'ordre d'affichage. Chacune suit le droit
+// de l'écran qu'elle ouvre ; « Mon mot de passe » est pour tout le monde.
+const RUBRIQUES_PARAMETRES = [
+  {
+    adresse: '/utilisateurs', titre: 'Utilisateurs et accès', icone: 'utilisateurs', teinte: 'violet', droit: 'utilisateurs.gerer',
+    texte: 'Comptes, rôles, mots de passe provisoires, suspensions et déblocages.',
+  },
+  {
+    adresse: '/employes', titre: 'Employés', icone: 'employes', teinte: 'bleu', droit: 'employes.gerer',
+    texte: 'Fiches des personnes à qui l’on remet du matériel.',
+  },
+  {
+    adresse: '/administration#sites', titre: 'Sites et services', icone: 'sites', teinte: 'indigo', droit: 'referentiels.gerer',
+    texte: 'Lieux de la société et services rattachés à chaque site.',
+  },
+  {
+    adresse: '/administration#categories', titre: 'Catégories et unités', icone: 'categories', teinte: 'jaune', droit: 'referentiels.gerer',
+    texte: 'Classement des matériels et des articles, unités de mesure.',
+  },
+  {
+    adresse: '/administration#parametres', titre: 'Réglages de l’application', icone: 'reglages', teinte: 'vert', droit: 'parametres.gerer',
+    texte: 'Nom de la société, signalements des employés, délais d’alerte, blocage des connexions.',
+  },
+  {
+    adresse: '/journal', titre: 'Journal des opérations', icone: 'journal', teinte: 'gris', droit: 'journal.lire',
+    texte: 'Qui a fait quoi, quand, et depuis quel poste.',
+  },
+  {
+    adresse: '/mot-de-passe', titre: 'Mon mot de passe', icone: 'mot-de-passe', teinte: 'orange',
+    texte: 'Choisir un nouveau mot de passe personnel.',
+  },
+];
+// Écrans rangés sous « Paramètres » : le lien reste en surbrillance, et un
+// lien de retour vers la page Paramètres s'affiche au-dessus du titre.
+const PAGES_PARAMETRES = ['/parametres', '/utilisateurs', '/employes', '/administration', '/journal'];
+
+export const aLeDroit = (utilisateur, droit) => utilisateur.droits.includes(droit);
+
+// Cartes visibles pour ce compte.
+export const rubriquesParametres = (utilisateur) => RUBRIQUES_PARAMETRES
+  .filter((rubrique) => !rubrique.droit || aLeDroit(utilisateur, rubrique.droit));
+// « Paramètres » apparaît dans le menu dès qu'une carte autre que le mot de passe est permise.
+const voitParametres = (utilisateur) => rubriquesParametres(utilisateur).some((rubrique) => rubrique.droit);
+
+// Nombre d'alertes à traiter, affiché sur la cloche et dans le menu. Gardé deux
+// minutes dans l'onglet (par utilisateur) pour ne pas interroger le serveur à chaque page.
 const CLE_ALERTES = 'gm.alertes';
 const DUREE_ALERTES = 2 * 60 * 1000;
 let utilisateurCourant = null;
 
 function pastilleAlertes(total) {
-  const pastille = document.getElementById('pastille-alertes');
-  if (!pastille) return;
-  pastille.hidden = !total;
-  pastille.textContent = String(total);
-  pastille.closest('a').setAttribute('aria-label', total ? `Alertes : ${total} à traiter` : 'Alertes');
+  for (const pastille of document.querySelectorAll('.pastille-alertes')) {
+    pastille.hidden = !total;
+    pastille.textContent = total > 99 ? '99+' : String(total);
+  }
+  for (const lien of document.querySelectorAll('[data-alertes]')) {
+    lien.setAttribute('aria-label', total ? `Alertes : ${total} à traiter` : 'Alertes');
+  }
 }
 
 export function memoriserAlertes(total) {
@@ -74,14 +118,15 @@ function rafraichirAlertes() {
 // Un employé sans autre droit arrive directement sur ses matériels.
 export const pageAccueil = (utilisateur) => (utilisateur.role === 'EMPLOYE' ? '/mes-materiels' : '/');
 
-// Page courante ; « /administration#parametres » se distingue de « /administration ».
 function estCourante(adresse) {
-  const { pathname, hash } = window.location;
-  if (adresse.includes('#')) return `${pathname}${hash}` === adresse;
+  const { pathname } = window.location;
   if (adresse === '/') return pathname === '/';
-  if (adresse === '/administration' && hash === '#parametres') return false;
+  if (adresse === '/parametres') return PAGES_PARAMETRES.some((page) => pathname === page || pathname.startsWith(`${page}/`));
   return pathname === adresse || pathname.startsWith(`${adresse}/`);
 }
+
+// Initiales du compte, pour la pastille ronde (« Tinasoa RAMA » → « TR »).
+const initiales = (nom) => nom.split(/\s+/).filter(Boolean).slice(0, 2).map((mot) => mot[0]).join('').toUpperCase() || '?';
 
 // Un lecteur de code-barres « tape » le code puis Entrée : on ouvre la fiche.
 function champRecherche() {
@@ -90,7 +135,7 @@ function champRecherche() {
     type: 'search', name: 'code', placeholder: 'Scanner ou chercher un code', autocomplete: 'off', maxLength: 100,
   });
   saisie.setAttribute('aria-label', 'Scanner ou chercher un code de matériel');
-  formulaire.append(saisie);
+  formulaire.append(icone('recherche', 'icone recherche-icone'), saisie);
   formulaire.addEventListener('submit', async (evenement) => {
     evenement.preventDefault();
     const code = saisie.value.trim();
@@ -106,96 +151,153 @@ function champRecherche() {
   return formulaire;
 }
 
+async function seDeconnecter() {
+  try {
+    await api('/auth/deconnexion', { methode: 'POST' });
+    window.location.assign('/connexion');
+  } catch (erreur) {
+    afficherMessage(erreur.message);
+  }
+}
+
 function lienMenu(lien) {
-  const element = creer('a', { href: lien.adresse, textContent: lien.libelle });
-  if (lien.pastille) element.append(creer('span', { className: 'pastille-menu', id: 'pastille-alertes', hidden: true }));
+  const element = creer('a', { href: lien.adresse },
+    icone(lien.icone), creer('span', { className: 'lien-texte', textContent: lien.libelle }));
+  if (lien.pastille) {
+    element.dataset.alertes = '';
+    element.append(creer('span', { className: 'pastille-menu pastille-alertes', hidden: true }));
+  }
   if (estCourante(lien.adresse)) element.setAttribute('aria-current', 'page');
   return element;
 }
 
-// Ferme tous les sous-menus ouverts (sauf celui qu'on garde).
-function fermerSousMenus(garde = null) {
-  for (const groupe of document.querySelectorAll('.groupe-menu.ouvert')) {
-    if (groupe === garde) continue;
-    groupe.classList.remove('ouvert');
-    groupe.querySelector('.titre-groupe').setAttribute('aria-expanded', 'false');
-  }
-}
-
-function sousMenu(titre, liens, rang) {
-  const panneau = creer('div', { className: 'sous-menu', id: `sous-menu-${rang}` }, ...liens.map(lienMenu));
-  const bouton = creer('button', { type: 'button', className: 'titre-groupe', textContent: titre });
-  bouton.setAttribute('aria-expanded', 'false');
-  bouton.setAttribute('aria-controls', panneau.id);
-  const groupe = creer('div', { className: 'groupe-menu' }, bouton, panneau);
-  if (liens.some((lien) => estCourante(lien.adresse))) groupe.classList.add('contient-courante');
-  bouton.addEventListener('click', () => {
-    fermerSousMenus(groupe);
-    const ouvert = groupe.classList.toggle('ouvert');
-    bouton.setAttribute('aria-expanded', String(ouvert));
-    if (ouvert) panneau.querySelector('a')?.focus();
-  });
-  return groupe;
-}
-
-// Menu ; null s'il n'y a rien à montrer (mot de passe à changer).
+// Menu de la barre latérale ; null s'il n'y a rien à montrer (mot de passe à changer).
 function creerMenu(utilisateur) {
   if (utilisateur.doit_changer_mot_de_passe) return null;
   // « Mes matériels » : compte rattaché à une fiche employé (toujours pour le rôle Employé,
   // dont c'est la seule page) ; « Accueil » : pas pour l'employé, renvoyé vers ses matériels.
-  const visible = (entree) => (!entree.droit || utilisateur.droits.includes(entree.droit))
-    && (!entree.employe || utilisateur.employe_id || utilisateur.role === 'EMPLOYE')
-    && entree.saufRole !== utilisateur.role;
-  const elements = [];
-  MENU.forEach((entree, rang) => {
-    if (!entree.groupe) {
-      if (visible(entree)) elements.push(lienMenu(entree));
-      return;
-    }
-    const liens = entree.liens.filter(visible);
-    if (liens.length === 1) elements.push(lienMenu(liens[0]));
-    else if (liens.length > 1) elements.push(sousMenu(entree.groupe, liens, rang));
-  });
-  if (elements.length === 0) return null;
-  const menu = creer('nav', { className: 'navigation', id: 'menu-principal' }, ...elements);
+  const visible = (lien) => (!lien.droit || aLeDroit(utilisateur, lien.droit))
+    && (!lien.employe || utilisateur.employe_id || utilisateur.role === 'EMPLOYE')
+    && lien.saufRole !== utilisateur.role;
+  const rubriques = MENU.map((rubrique) => ({ ...rubrique, liens: rubrique.liens.filter(visible) }));
+  if (voitParametres(utilisateur)) {
+    rubriques.push({ liens: [{ adresse: '/parametres', libelle: 'Paramètres', icone: 'parametres' }] });
+  }
+  // Une seule rubrique (l'employé et « Mes matériels ») : pas d'intertitre.
+  const remplies = rubriques.filter((rubrique) => rubrique.liens.length > 0);
+  const sections = remplies.map((rubrique) => creer('div', { className: 'section-menu' },
+    remplies.length > 1 && rubrique.titre && creer('p', { className: 'titre-section', textContent: rubrique.titre }),
+    ...rubrique.liens.map(lienMenu)));
+  if (sections.length === 0) return null;
+  const menu = creer('nav', { className: 'navigation', id: 'menu-principal' }, ...sections);
   menu.setAttribute('aria-label', 'Menu principal');
   return menu;
 }
 
-// Un clic ailleurs, le choix d'un lien ou la touche Échap referment les sous-menus
-// (et, sur téléphone, le menu déplié) : utile quand le lien ne recharge pas la page.
+function barreLaterale(utilisateur, menu) {
+  const fermer = creer('button', { type: 'button', className: 'bouton-icone fermer-barre' }, icone('fermer'));
+  fermer.setAttribute('aria-label', 'Fermer le menu');
+  fermer.addEventListener('click', () => basculerBarre(false));
+
+  const deconnexion = creer('button', { type: 'button', className: 'lien-deconnexion' },
+    icone('deconnexion'), creer('span', { textContent: 'Déconnexion' }));
+  deconnexion.addEventListener('click', seDeconnecter);
+
+  const aside = creer('aside', { className: 'barre-laterale', id: 'barre-laterale' },
+    creer('div', { className: 'barre-marque' },
+      creer('a', { className: 'marque', href: pageAccueil(utilisateur) },
+        creer('img', { src: '/favicon.svg', alt: '', width: 32, height: 32 }),
+        creer('span', { textContent: 'Gestion des matériels' })),
+      fermer),
+    aLeDroit(utilisateur, 'materiels.lire') && champRecherche(),
+    menu,
+    creer('div', { className: 'barre-pied' },
+      creer('a', { className: 'barre-compte', href: '/mot-de-passe', title: 'Mon mot de passe' },
+        creer('span', { className: 'avatar avatar-petit', textContent: initiales(utilisateur.nom) }),
+        creer('span', { className: 'barre-compte-texte' },
+          creer('span', { className: 'barre-compte-nom', textContent: utilisateur.nom }),
+          creer('span', { className: 'barre-compte-role', textContent: utilisateur.role_libelle }))),
+      deconnexion));
+  aside.setAttribute('aria-label', 'Navigation');
+  return aside;
+}
+
+// Ouvre ou ferme la barre latérale repliée (tablette et téléphone).
+function basculerBarre(ouvrir) {
+  document.body.classList.toggle('barre-ouverte', ouvrir);
+  document.querySelector('.bouton-menu')?.setAttribute('aria-expanded', String(ouvrir));
+  if (ouvrir) document.querySelector('#barre-laterale .fermer-barre')?.focus();
+}
+
+// Menu déroulant du compte (pastille ronde en haut à droite).
+function menuCompte(utilisateur) {
+  const bouton = creer('button', { type: 'button', className: 'bouton-compte' },
+    creer('span', { className: 'avatar', textContent: initiales(utilisateur.nom) }), icone('chevron', 'icone chevron'));
+  bouton.setAttribute('aria-label', `Compte de ${utilisateur.nom}`);
+  bouton.setAttribute('aria-expanded', 'false');
+  bouton.setAttribute('aria-controls', 'menu-compte');
+
+  const deconnexion = creer('button', { type: 'button' }, icone('deconnexion'), creer('span', { textContent: 'Se déconnecter' }));
+  deconnexion.addEventListener('click', seDeconnecter);
+  const panneau = creer('div', { className: 'menu-compte', id: 'menu-compte', hidden: true },
+    creer('div', { className: 'menu-compte-identite' },
+      creer('strong', { textContent: utilisateur.nom }),
+      creer('span', { textContent: utilisateur.role_libelle }),
+      utilisateur.email && creer('span', { className: 'menu-compte-email', textContent: utilisateur.email })),
+    creer('a', { href: '/mot-de-passe' }, icone('mot-de-passe'), creer('span', { textContent: 'Mon mot de passe' })),
+    !utilisateur.doit_changer_mot_de_passe && voitParametres(utilisateur)
+      && creer('a', { href: '/parametres' }, icone('parametres'), creer('span', { textContent: 'Paramètres' })),
+    deconnexion);
+
+  const conteneur = creer('div', { className: 'compte' }, bouton, panneau);
+  bouton.addEventListener('click', () => {
+    panneau.hidden = !panneau.hidden;
+    bouton.setAttribute('aria-expanded', String(!panneau.hidden));
+  });
+  return conteneur;
+}
+
+function fermerMenuCompte() {
+  const panneau = document.getElementById('menu-compte');
+  if (!panneau || panneau.hidden) return false;
+  panneau.hidden = true;
+  document.querySelector('.bouton-compte')?.setAttribute('aria-expanded', 'false');
+  return true;
+}
+
+// Un clic ailleurs ferme le menu du compte ; le choix d'un lien referme la barre
+// latérale dépliée. Échap ferme l'un ou l'autre.
 document.addEventListener('click', (evenement) => {
   const cible = evenement.target;
-  if (cible.closest?.('.navigation a')) {
-    fermerSousMenus();
-    const entete = document.getElementById('entete');
-    entete?.classList.remove('menu-ouvert');
-    entete?.querySelector('.bouton-menu')?.setAttribute('aria-expanded', 'false');
-    return;
-  }
-  if (!cible.closest?.('.groupe-menu')) fermerSousMenus();
+  if (!cible.closest?.('.compte')) fermerMenuCompte();
+  if (cible.closest?.('.barre-laterale a') || cible.closest?.('.voile')) basculerBarre(false);
 });
 document.addEventListener('keydown', (evenement) => {
   if (evenement.key !== 'Escape') return;
-  const ouvert = document.querySelector('.groupe-menu.ouvert');
-  if (!ouvert) return;
-  fermerSousMenus();
-  ouvert.querySelector('.titre-groupe').focus();
-});
-
-// Changement d'onglet sans rechargement (Administration › Réglages) : le lien courant suit.
-window.addEventListener('hashchange', () => {
-  for (const lien of document.querySelectorAll('.navigation a')) {
-    if (estCourante(lien.getAttribute('href'))) lien.setAttribute('aria-current', 'page');
-    else lien.removeAttribute('aria-current');
+  if (fermerMenuCompte()) {
+    document.querySelector('.bouton-compte')?.focus();
+    return;
+  }
+  if (document.body.classList.contains('barre-ouverte')) {
+    basculerBarre(false);
+    document.querySelector('.bouton-menu')?.focus();
   }
 });
 
-// Hauteur de l'en-tête fixé : les messages et les ancres se placent dessous.
+// Hauteur de la barre du haut : les messages et les ancres se placent dessous.
 function suivreHauteur(entete) {
   const poser = () => document.documentElement.style.setProperty('--hauteur-entete', `${entete.offsetHeight}px`);
   poser();
   if ('ResizeObserver' in window) new ResizeObserver(poser).observe(entete);
+}
+
+// Écrans rangés sous « Paramètres » : lien de retour au-dessus du titre.
+function lienRetourParametres(utilisateur) {
+  const { pathname } = window.location;
+  if (pathname === '/parametres' || !estCourante('/parametres') || !voitParametres(utilisateur)) return;
+  const titre = document.querySelector('main h1');
+  if (!titre || titre.previousElementSibling?.classList.contains('fil')) return;
+  titre.before(creer('p', { className: 'fil' }, creer('a', { href: '/parametres', textContent: '‹ Paramètres' })));
 }
 
 export async function initialiserEntete() {
@@ -203,48 +305,46 @@ export async function initialiserEntete() {
   const entete = document.getElementById('entete');
   const menu = creerMenu(utilisateur);
   utilisateurCourant = utilisateur;
+  const recherche = !utilisateur.doit_changer_mot_de_passe && aLeDroit(utilisateur, 'materiels.lire');
 
-  const deconnexion = creer('button', { type: 'button', className: 'lien-bouton', textContent: 'Se déconnecter' });
-  deconnexion.addEventListener('click', async () => {
-    try {
-      await api('/auth/deconnexion', { methode: 'POST' });
-      window.location.assign('/connexion');
-    } catch (erreur) {
-      afficherMessage(erreur.message);
-    }
-  });
-
-  const compte = creer('div', { className: 'compte' },
-    creer('div', { className: 'compte-identite' },
-      creer('span', { className: 'compte-nom', textContent: utilisateur.nom }),
-      creer('span', { className: 'compte-role', textContent: utilisateur.role_libelle })),
-    creer('div', { className: 'compte-liens' },
-      creer('a', { href: '/mot-de-passe', textContent: 'Mon mot de passe' }),
-      deconnexion));
-
-  // Bande du haut : nom de l'application, recherche, compte (et bouton « Menu » sur téléphone).
-  const haut = creer('div', { className: 'entete-haut' });
-  const marque = entete.querySelector('.marque');
-  if (marque) haut.append(marque);
+  // Barre du haut : [Menu] [nom de l'application] [accueil] … [recherche] [cloche] [compte].
+  const gauche = creer('div', { className: 'entete-gauche' });
   if (menu) {
-    const ouvrir = creer('button', { type: 'button', className: 'bouton-menu', textContent: 'Menu' });
-    ouvrir.setAttribute('aria-controls', menu.id);
+    const ouvrir = creer('button', { type: 'button', className: 'bouton-icone bouton-menu' }, icone('menu'));
+    ouvrir.setAttribute('aria-label', 'Menu');
+    ouvrir.setAttribute('aria-controls', 'barre-laterale');
     ouvrir.setAttribute('aria-expanded', 'false');
-    ouvrir.addEventListener('click', () => {
-      const ouvert = entete.classList.toggle('menu-ouvert');
-      ouvrir.setAttribute('aria-expanded', String(ouvert));
-    });
-    haut.append(ouvrir);
+    ouvrir.addEventListener('click', () => basculerBarre(!document.body.classList.contains('barre-ouverte')));
+    gauche.append(ouvrir);
   }
-  if (!utilisateur.doit_changer_mot_de_passe && utilisateur.droits.includes('materiels.lire')) haut.append(champRecherche());
-  haut.append(compte);
-  entete.replaceChildren(...[haut, menu].filter(Boolean));
-  // Sur téléphone, la recherche et le compte rejoignent le menu replié (s'il existe).
-  entete.classList.toggle('avec-menu', Boolean(menu));
+  const marque = entete.querySelector('.marque') ?? creer('a', { className: 'marque', textContent: 'Gestion des matériels' });
+  marque.href = pageAccueil(utilisateur);
+  gauche.append(marque);
+
+  const droite = creer('div', { className: 'entete-droite' });
+  if (recherche) droite.append(champRecherche());
+  if (!utilisateur.doit_changer_mot_de_passe && aLeDroit(utilisateur, 'alertes.lire')) {
+    const cloche = creer('a', { className: 'bouton-icone cloche', href: '/alertes', title: 'Alertes' },
+      icone('alertes'), creer('span', { className: 'pastille-cloche pastille-alertes', hidden: true }));
+    cloche.dataset.alertes = '';
+    cloche.setAttribute('aria-label', 'Alertes');
+    if (window.location.pathname === '/alertes') cloche.setAttribute('aria-current', 'page');
+    droite.append(cloche);
+  }
+  droite.append(menuCompte(utilisateur));
+
+  entete.replaceChildren(gauche,
+    creer('p', { className: 'bienvenue', textContent: `Bienvenue dans l’espace ${utilisateur.role_libelle}` }),
+    droite);
+  entete.classList.toggle('sans-recherche', !recherche);
+
+  if (menu) {
+    document.body.classList.add('avec-barre');
+    document.body.prepend(barreLaterale(utilisateur, menu), creer('div', { className: 'voile' }));
+  }
   suivreHauteur(entete);
+  lienRetourParametres(utilisateur);
   // L'écran Alertes met lui-même la pastille à jour après son chargement.
-  if (document.getElementById('pastille-alertes') && window.location.pathname !== '/alertes') rafraichirAlertes();
+  if (document.querySelector('.pastille-alertes') && window.location.pathname !== '/alertes') rafraichirAlertes();
   return utilisateur;
 }
-
-export const aLeDroit = (utilisateur, droit) => utilisateur.droits.includes(droit);

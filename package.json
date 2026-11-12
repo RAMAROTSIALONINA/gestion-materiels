@@ -1,6 +1,6 @@
 {
   "name": "gestion-materiels",
-  "version": "0.7.0",
+  "version": "0.7.1",
   "description": "Gestion des matériels et des articles : entrées, sorties, affectations, stocks et états des biens de la société",
   "private": true,
   "type": "module",

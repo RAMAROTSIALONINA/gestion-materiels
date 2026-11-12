@@ -22,8 +22,8 @@ Un compte de responsable est rattaché à un service ; un compte d'employé à u
 |---|:-:|:-:|:-:|:-:|
 | Modifier les paramètres de l'application | ✓ | | | |
 | Créer et gérer les comptes utilisateurs | ✓ | | | |
-| Consulter le journal des opérations (menu **Paramètres › Journal des opérations**) | ✓ | | | |
-| Consulter les alertes (écran **Alertes** et pastille du menu) | ✓ | ✓ | son service ⁴ | |
+| Consulter le journal des opérations (**Paramètres › Journal des opérations**) | ✓ | | | |
+| Consulter les alertes (écran **Alertes**, pastille du menu et cloche de la barre du haut) | ✓ | ✓ | son service ⁴ | |
 | Gérer sites, services et catégories | ✓ | | | |
 | Consulter sites, services, catégories et unités | ✓ | ✓ | ✓ | |
 | Créer et modifier les fiches employés | ✓ | ✓ | | |
@@ -50,6 +50,8 @@ Un compte de responsable est rattaché à un service ; un compte d'employé à u
 ⁴ Décision du 11/11 (phase 7) : stocks sous le seuil propre au site de son service, retours en retard ou proches des employés et des matériels de son service, transferts qui partent de ce site ou y arrivent, réparations et matériels endommagés de son service. Pas de signalements, de mouvements à autoriser ni d'étiquettes : ce n'est pas à lui d'agir.
 
 Changer l'état d'un matériel (et l'envoyer en réparation ou l'en faire revenir) fait partie de « Créer et modifier les fiches matériels » : administrateur et gestionnaire. L'historique des états suit « Consulter les matériels » (le responsable : son service).
+
+La page **Paramètres** (12/11) s'ouvre pour toute personne connectée, mais ne montre que les cartes des écrans permis à son rôle (« Mon mot de passe » pour tous). Le lien « Paramètres » du menu n'apparaît que s'il y a autre chose que le mot de passe : administrateur (toutes les cartes) et gestionnaire (Employés).
 
 En place depuis la phase 7 : tous les droits du tableau sauf les rapports (phase 8). L'employé arrive directement sur **Mes matériels** ; son menu ne montre que cette page. Le responsable de service voit **Réceptions** (transferts arrivant au site de son service, via `peutReceptionner()`), et les mouvements et affectations de son service en lecture seule.
 

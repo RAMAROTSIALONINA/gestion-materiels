@@ -67,8 +67,8 @@ const ONGLETS = {
     cellules: (u) => [creer('strong', { textContent: u.code }), u.libelle, u.symbole, String(u.decimales)],
   },
   parametres: {
-    titre: 'Paramètres',
-    aide: 'Réglages de l’application. Les préfixes des codes, le fuseau horaire et la devise sont figés : ils entrent dans les codes et les dates déjà enregistrés.',
+    titre: 'Réglages de l’application',
+    aide: 'Les réglages modifiables viennent en premier. Les préfixes des codes, le fuseau horaire et la devise sont figés : ils entrent dans les codes et les dates déjà enregistrés.',
     // Les réglages modifiables d'abord, les valeurs figées ensuite.
     source: async () => (await api('/parametres')).parametres.sort((a, b) => Number(b.modifiable) - Number(a.modifiable)),
     colonnes: ['Paramètre', 'Valeur', 'Dernière modification'],
@@ -183,7 +183,7 @@ for (const bouton of document.querySelectorAll('[role="tab"]')) {
   });
 }
 element('ajouter').addEventListener('click', () => editer());
-// Le menu « Paramètres » de l'en-tête peut changer d'onglet sans recharger la page (#parametres).
+// Une adresse avec #sites, #categories ou #parametres (cartes de la page Paramètres) ouvre l'onglet voulu.
 window.addEventListener('hashchange', () => {
   const demande = window.location.hash.slice(1);
   if (!Object.hasOwn(ONGLETS, demande) || demande === onglet) return;

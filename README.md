@@ -34,11 +34,15 @@ Connexion, rôles et droits : [docs/droits.md](docs/droits.md).
 
 ## Premiers pas dans l'application
 
-1. **Administration** (administrateur) : créer les **sites** (siège, dépôt…), puis les **services**, chacun rattaché à son site. Les catégories de base sont déjà là ; on peut en ajouter.
-2. **Utilisateurs** : créer les comptes des collègues. Un responsable de service est rattaché à son service.
-3. **Employés** : créer les fiches des personnes à qui l'on remettra du matériel.
+L'écran se compose d'une **barre latérale** sombre à gauche (le menu, classé en rubriques « Parc et stocks », « Opérations », puis **Paramètres** ; en bas, le compte et la déconnexion) et d'une **barre du haut** fixée (recherche par code, cloche des alertes avec leur nombre, menu du compte). Chacun ne voit que les pages permises par son rôle. Sur tablette et téléphone, la barre latérale se replie : le bouton ☰ l'ouvre.
+
+**Paramètres** regroupe en cartes les écrans de réglage : Utilisateurs et accès, Employés, Sites et services, Catégories et unités, Réglages de l'application, Journal des opérations, Mon mot de passe.
+
+1. **Paramètres › Sites et services** (administrateur) : créer les **sites** (siège, dépôt…), puis les **services**, chacun rattaché à son site. Les catégories de base sont déjà là (**Catégories et unités**) ; on peut en ajouter.
+2. **Paramètres › Utilisateurs et accès** : créer les comptes des collègues. Un responsable de service est rattaché à son service.
+3. **Paramètres › Employés** : créer les fiches des personnes à qui l'on remettra du matériel.
 4. **Matériels** → **Nouveau matériel** : la fiche et sa réception (achat ou don) s'enregistrent ensemble, et le code `MAT-AAAA-NNNN` est attribué.
-5. Cocher les matériels, puis **Imprimer les étiquettes** : planche A4 de 3 × 7 étiquettes (63,5 × 38,1 mm), à imprimer en « Taille réelle ». Pour ouvrir une fiche, il suffit ensuite de scanner l'étiquette dans le champ de recherche de l'en-tête.
+5. Cocher les matériels, puis **Imprimer les étiquettes** : planche A4 de 3 × 7 étiquettes (63,5 × 38,1 mm), à imprimer en « Taille réelle ». Pour ouvrir une fiche, il suffit ensuite de scanner l'étiquette dans le champ de recherche de la barre du haut.
 6. **Articles** → **Nouvel article** : unité et seuil global obligatoires ; seuils par site facultatifs, depuis la fiche de l'article.
 7. **Mouvements** → **Nouveau mouvement** : réception (achat, don), consommation, transfert, perte, casse, mise au rebut, correction d'inventaire. Les articles se choisissent dans une liste, les matériels se scannent. « Enregistrer et valider » met le stock à jour tout de suite ; un brouillon se reprend plus tard. Les fiches matériel et article proposent aussi ces opérations, déjà préremplies.
 8. Une **correction d'inventaire** reste en brouillon « À autoriser » : un administrateur ou un autre gestionnaire que son auteur la valide depuis **Mouvements** (case « À autoriser par moi »).
@@ -46,7 +50,7 @@ Connexion, rôles et droits : [docs/droits.md](docs/droits.md).
 10. **Affectations** → **Remettre un matériel** : scanner l'étiquette, choisir l'employé, saisir le n° de contrat, le n° de ticket et la date de retour prévue. **Retour** : l'état constaté décide du statut (endommagé → en réparation, hors service → réformé). **Prolonger** : nouvelle date, motif obligatoire.
 11. **Signalements** : l'administrateur les active dans **Paramètres › Réglages de l’application**. L'employé signale alors une panne ou une perte depuis **Mes matériels** ; le gestionnaire la prend en charge puis la clôt en indiquant la suite donnée.
 12. **États** : sur la fiche d'un matériel, **Changer l'état**, **Envoyer en réparation** puis **Fin de réparation**. Un commentaire est exigé pour un matériel endommagé, hors service ou envoyé en réparation ; chaque changement est inscrit, avec son auteur et sa date, dans l'**Historique des états** (bouton de la liste des matériels). Un matériel hors service reste en réparation en attendant la décision, ou part au rebut.
-13. **Alertes** (menu, avec le nombre à traiter) : stocks sous le seuil, retours en retard ou proches, transferts en route depuis 3 jours, réparations depuis 30 jours, matériels endommagés encore en service, signalements et mouvements à autoriser. Les délais se changent dans **Paramètres › Réglages de l’application**. Le responsable de service voit les alertes de son service.
+13. **Alertes** (menu de gauche et cloche de la barre du haut, avec le nombre à traiter) : stocks sous le seuil, retours en retard ou proches, transferts en route depuis 3 jours, réparations depuis 30 jours, matériels endommagés encore en service, signalements et mouvements à autoriser. Les délais se changent dans **Paramètres › Réglages de l’application**. Le responsable de service voit les alertes de son service.
 14. **Paramètres › Journal des opérations** (administrateur) : toutes les opérations sensibles, avec leur auteur, leur date et leurs détails.
 
 ## Organisation du dossier
@@ -120,7 +124,7 @@ Hors première version : comptabilité et amortissements, circuit d'achats fourn
 | 4 | Authentification et rôles | Connexion sécurisée (session en base) | **Fait le 11/11** — recette 1 et 2 couvertes, 46 tests ; droits validés ([droits.md](docs/droits.md) § 5) |
 | 5 | Matériels et articles | Fiches et listes, étiquettes code-barres, recherche par scan | **Fait le 11/11** (version 0.5.0) — référentiels, employés, matériels avec réception, étiquettes, articles et seuils par site ; recette 3 et 4 couvertes, 67 tests |
 | 6 | Mouvements, affectations, retours | Traçabilité, réception des transferts (y compris par le responsable du site), « Mes matériels » et signalements activables | **Fait le 11/11** (version 0.6.0) — saisie et validation des mouvements, autorisation par une autre personne, annulation et mouvement inverse, réceptions, remises, retours et prolongations, signalements ; recette 5 à 11 et scénarios 4.2–4.3 couverts, 85 tests ; **migration 0002 à appliquer sur Neon** |
-| 7 | États, historiques, alertes | Suivi du parc et des stocks | **Fait le 11/11** (version 0.7.0) — changement d'état et réparations depuis la fiche, historique des états du parc, écran Alertes (pastille dans le menu, délais modifiables, périmètre du responsable), journal des opérations pour l'administrateur ; recette 10 couverte, 93 tests, 123 contrôles ; **migrations 0002 et 0003 à appliquer sur Neon** |
+| 7 | États, historiques, alertes | Suivi du parc et des stocks | **Fait le 11/11** (version 0.7.0) — changement d'état et réparations depuis la fiche, historique des états du parc, écran Alertes (pastille dans le menu, délais modifiables, périmètre du responsable), journal des opérations pour l'administrateur ; recette 10 couverte, 93 tests, 123 contrôles ; migrations 0002 et 0003 appliquées sur Neon, **en ligne le 12/11** sur Render. Interface revue le 12/11 (version 0.7.1) : barre latérale à icônes, barre du haut (recherche, cloche, compte), page Paramètres en cartes |
 | 8 | Tableau de bord et rapports | Indicateurs et exports | À faire |
 | 9 | Tests, sauvegardes, déploiement | Version de recette en ligne | À faire |
 

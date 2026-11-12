@@ -1,6 +1,6 @@
 # Installation et lancement en local
 
-**Gestion des matériels et des articles** — version 0.7.0 (phase 7)
+**Gestion des matériels et des articles** — version 0.7.1 (phase 7, interface revue le 12/11)
 
 Ce guide permet d'installer l'application sur un poste, de créer la base de données sur Neon et de vérifier que tout fonctionne. La mise en ligne sur Render fera l'objet d'un guide séparé (phase 9).
 
@@ -191,5 +191,6 @@ database/migrations/0002_description_courte.sql
 | `node_modules/jsbarcode` | Code-barres des étiquettes, servi sous `/vendor/jsbarcode` (licence MIT) |
 | `scripts/creer-admin.js` | Création d'un administrateur en ligne de commande |
 | `public/js/app.js` | Appels à l'API, messages, dialogues et confirmations, communs à toutes les pages |
-| `public/js/entete.js` | En-tête des pages connectées : menu selon les droits, déconnexion |
+| `public/js/entete.js` | Cadre des pages connectées : barre latérale (menu par rubriques selon les droits, compte, déconnexion), barre du haut (recherche par code, cloche des alertes, menu du compte), cartes de la page Paramètres |
+| `public/js/icones.js` | Icônes au trait du menu et des cartes, dessinées dans la page (aucun fichier à télécharger) |
 | `tests/` | Tests du serveur (`npm test`) |

@@ -248,7 +248,7 @@ describe('états, historiques, alertes, journal', { skip: raisonSansBase }, () =
     assert.equal((await n.respInfo.requete('/api/journal')).statut, 403);
   });
 
-  test('pages : alertes, historique et journal selon les droits', async () => {
+  test('pages : alertes, historique, journal et paramètres selon les droits', async () => {
     const page = async (navigateur, chemin) => {
       const reponse = await navigateur.requete(chemin);
       return reponse.statut === 200 ? 200 : reponse.entetes.get('location');
@@ -261,6 +261,8 @@ describe('états, historiques, alertes, journal', { skip: raisonSansBase }, () =
     assert.equal(await page(n.respInfo, '/historique'), 200);
     assert.equal(await page(n.jean, '/alertes'), '/');
     assert.equal(await page(n.jean, '/historique'), '/');
+    // Page Paramètres : ouverte à toute personne connectée (les cartes suivent les droits).
+    for (const navigateur of [n.admin, n.g1, n.respInfo, n.jean]) assert.equal(await page(navigateur, '/parametres'), 200);
   });
 
   test('cohérence finale : stock tenu = stock recalculé, statuts cohérents', async () => {
