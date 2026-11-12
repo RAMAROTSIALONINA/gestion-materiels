@@ -55,7 +55,7 @@ Un compte de responsable est rattaché à un service ; un compte d'employé à u
 
 Changer l'état d'un matériel (et l'envoyer en réparation ou l'en faire revenir) fait partie de « Créer et modifier les fiches matériels » : administrateur et gestionnaire. L'historique des états suit « Consulter les matériels » (le responsable : son service).
 
-La page **Paramètres** (12/11) s'ouvre pour toute personne connectée, mais ne montre que les cartes des écrans permis à son rôle (« Mon mot de passe » pour tous). Le lien « Paramètres » du menu n'apparaît que s'il y a autre chose que le mot de passe : administrateur (toutes les cartes) et gestionnaire (Employés).
+La page **Paramètres** (12/11) s'ouvre pour toute personne connectée, mais ne montre que les cartes des écrans permis à son rôle (« Mon mot de passe » pour tous). Le lien « Paramètres » du menu n'apparaît que s'il y a autre chose que le mot de passe : administrateur (toutes les cartes), gestionnaire (Rapports, Historique des états, Employés) et responsable de service (Rapports, Historique des états), depuis que Rapports et Historique des états y sont rangés (12/11).
 
 Tous les droits du tableau sont en place depuis la phase 8 (12/11). L'employé arrive directement sur **Mes matériels** ; son menu ne montre que cette page. Le responsable de service voit les mouvements et les remises de son service en lecture seule (écrans **Mouvements** et **Remises et retours**).
 

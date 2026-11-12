@@ -15,15 +15,13 @@ const MENU = [
     liens: [
       { adresse: '/', libelle: 'Tableau de bord', icone: 'accueil', saufRole: 'EMPLOYE' },
       { adresse: '/alertes', libelle: 'Alertes', icone: 'alertes', droit: 'alertes.lire', pastille: true },
-      { adresse: '/rapports', libelle: 'Rapports', icone: 'rapports', droit: 'rapports.lire' },
     ],
   },
   {
     titre: 'Parc et stocks',
     liens: [
-      { adresse: '/materiels', libelle: 'Matériels', icone: 'materiels', droit: 'materiels.lire' },
-      { adresse: '/historique', libelle: 'Historique des états', icone: 'historique', droit: 'materiels.lire' },
-      { adresse: '/articles', libelle: 'Articles', icone: 'articles', droit: 'articles.lire' },
+      // Décision du 12/11 : un seul écran, une liste déroulante choisit Matériels ou Articles.
+      { adresse: '/materiels', libelle: 'Matériels et articles', icone: 'materiels', droit: 'materiels.lire', actifSur: ['/materiels', '/articles'] },
       { adresse: '/mes-materiels', libelle: 'Mes matériels', icone: 'mes-materiels', droit: 'mes_materiels.lire', employe: true },
     ],
   },
@@ -39,7 +37,16 @@ const MENU = [
 
 // Cartes de la page Paramètres, dans l'ordre d'affichage. Chacune suit le droit
 // de l'écran qu'elle ouvre ; « Mon mot de passe » est pour tout le monde.
+// Rapports et Historique des états y sont rangés depuis le 12/11.
 const RUBRIQUES_PARAMETRES = [
+  {
+    adresse: '/rapports', titre: 'Rapports', icone: 'rapports', teinte: 'bleu', droit: 'rapports.lire',
+    texte: 'État du parc, mouvements, remises, retours, stock, anomalies : à l’écran, en CSV ou en PDF.',
+  },
+  {
+    adresse: '/historique', titre: 'Historique des états', icone: 'historique', teinte: 'indigo', droit: 'materiels.lire',
+    texte: 'Chaque changement d’état ou de statut des matériels, daté et signé.',
+  },
   {
     adresse: '/utilisateurs', titre: 'Utilisateurs et accès', icone: 'utilisateurs', teinte: 'violet', droit: 'utilisateurs.gerer',
     texte: 'Comptes, rôles, mots de passe provisoires, suspensions et déblocages.',
@@ -71,7 +78,7 @@ const RUBRIQUES_PARAMETRES = [
 ];
 // Écrans rangés sous « Paramètres » : le lien reste en surbrillance, et un
 // lien de retour vers la page Paramètres s'affiche au-dessus du titre.
-const PAGES_PARAMETRES = ['/parametres', '/utilisateurs', '/employes', '/administration', '/journal'];
+const PAGES_PARAMETRES = ['/parametres', '/rapports', '/historique', '/utilisateurs', '/employes', '/administration', '/journal'];
 
 export const aLeDroit = (utilisateur, droit) => utilisateur.droits.includes(droit);
 
@@ -167,8 +174,18 @@ function lienMenu(lien) {
     element.dataset.alertes = '';
     element.append(creer('span', { className: 'pastille-menu pastille-alertes', hidden: true }));
   }
-  if (estCourante(lien.adresse)) element.setAttribute('aria-current', 'page');
+  const courant = lien.actifSur ? lien.actifSur.some(estCourante) : estCourante(lien.adresse);
+  if (courant) element.setAttribute('aria-current', 'page');
   return element;
+}
+
+// « Matériels et articles » (12/11) : la liste déroulante [data-vue] de ces deux
+// écrans passe de l'un à l'autre.
+function brancherChoixVue() {
+  const choix = document.querySelector('select[data-vue]');
+  if (!choix) return;
+  choix.value = window.location.pathname;
+  choix.addEventListener('change', () => window.location.assign(choix.value));
 }
 
 // Menu de la barre latérale ; null s'il n'y a rien à montrer (mot de passe à changer).
@@ -344,6 +361,7 @@ export async function initialiserEntete() {
   }
   suivreHauteur(entete);
   lienRetourParametres(utilisateur);
+  brancherChoixVue();
   // L'écran Alertes met lui-même la pastille à jour après son chargement.
   if (document.querySelector('.pastille-alertes') && window.location.pathname !== '/alertes') rafraichirAlertes();
   return utilisateur;

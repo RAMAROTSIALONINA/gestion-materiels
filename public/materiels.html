@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Matériels — Gestion des matériels</title>
+  <title>Matériels et articles — Gestion des matériels</title>
   <link rel="icon" href="/favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="/css/style.css">
   <script type="module" src="/js/materiels.js"></script>
@@ -16,9 +16,17 @@
 
   <main class="contenu contenu-large">
     <div class="barre-titre">
-      <h1>Matériels</h1>
+      <div class="titre-vue">
+        <h1>Matériels et articles</h1>
+        <div class="choix-vue">
+          <label for="vue">Afficher</label>
+          <select id="vue" data-vue>
+            <option value="/materiels" selected>Matériels (suivis à l’unité)</option>
+            <option value="/articles">Articles (consommables)</option>
+          </select>
+        </div>
+      </div>
       <div class="actions-ligne">
-        <a href="/historique" class="bouton bouton-secondaire">Historique des états</a>
         <button type="button" id="etiquettes" class="bouton bouton-secondaire" hidden disabled>Imprimer les étiquettes</button>
         <button type="button" id="nouveau" class="bouton" hidden>Nouveau matériel</button>
       </div>

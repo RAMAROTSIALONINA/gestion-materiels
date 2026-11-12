@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Articles — Gestion des matériels</title>
+  <title>Matériels et articles — Gestion des matériels</title>
   <link rel="icon" href="/favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="/css/style.css">
   <script type="module" src="/js/articles.js"></script>
@@ -16,12 +16,21 @@
 
   <main class="contenu contenu-large">
     <div class="barre-titre">
-      <h1>Articles</h1>
+      <div class="titre-vue">
+        <h1>Matériels et articles</h1>
+        <div class="choix-vue">
+          <label for="vue">Afficher</label>
+          <select id="vue" data-vue>
+            <option value="/materiels">Matériels (suivis à l’unité)</option>
+            <option value="/articles" selected>Articles (consommables)</option>
+          </select>
+        </div>
+      </div>
       <button type="button" id="nouveau" class="bouton" hidden>Nouvel article</button>
     </div>
     <p class="aide">
-      Consommables suivis en quantité. Le stock évolue uniquement par les mouvements (réceptions, sorties,
-      transferts), qui arrivent à la phase suivante.
+      Consommables suivis en quantité. Le stock évolue par les mouvements : entrée de stock et correction depuis
+      la fiche de l’article, sortie et transfert depuis Mouvements.
     </p>
 
     <form class="filtres" id="filtres" role="search">
