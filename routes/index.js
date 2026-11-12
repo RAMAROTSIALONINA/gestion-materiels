@@ -8,6 +8,7 @@ import { routeurEmployes } from './employes.js';
 import { routeurMateriels } from './materiels.js';
 import { routeurMouvements } from './mouvements.js';
 import { routeurParametres } from './parametres.js';
+import { routeurRapports } from './rapports.js';
 import { routeurReferentiels } from './referentiels.js';
 import { routeurSante } from './sante.js';
 import { routeurSignalements } from './signalements.js';
@@ -28,5 +29,6 @@ export function creerRouteurApi(options = {}) {
   routeur.use(routeurAffectations);
   routeur.use(routeurSignalements);
   routeur.use(routeurSuivi);
+  routeur.use(routeurRapports);
   return routeur;
 }

@@ -1,8 +1,8 @@
 // Journal des opérations (administrateur) : lecture seule, filtres par date,
-// personne, opération et texte des détails.
+// personne, opération et texte des détails ; export CSV ou PDF (phase 8).
 import {
   LIBELLES_ETAT, LIBELLES_STATUT, afficherMessage, afficherPagination, api, creer, differer, ecrireFiltresAdresse,
-  formaterDateHeure, ligneVide, lireFiltresAdresse,
+  formaterDateHeure, ligneVide, lireFiltresAdresse, telecharger,
 } from './app.js';
 import { initialiserEntete } from './entete.js';
 
@@ -24,13 +24,13 @@ const ACTIONS = {
   MOUVEMENT_CREE: 'Mouvement en brouillon', MOUVEMENT_MODIFIE: 'Brouillon modifié', MOUVEMENT_VALIDE: 'Mouvement validé',
   MOUVEMENT_ANNULE: 'Mouvement annulé', MOUVEMENT_INVERSE_CREE: 'Mouvement inverse', TRANSFERT_RECU: 'Transfert reçu',
   MATERIEL_REMIS: 'Matériel remis', MATERIEL_RENDU: 'Matériel rendu', PROLONGATION: 'Contrat prolongé',
-  SIGNALEMENT_CREE: 'Signalement', SIGNALEMENT_TRAITE: 'Signalement traité',
+  SIGNALEMENT_CREE: 'Signalement', SIGNALEMENT_TRAITE: 'Signalement traité', EXPORT_RAPPORT: 'Export de rapport',
 };
 // Lien vers l'élément concerné, quand un écran l'affiche.
 const PAGES = { materiels: '/materiels/', articles: '/articles/', mouvements: '/mouvements/' };
 const ENTITES = {
   materiels: 'Matériel', articles: 'Article', mouvements: 'Mouvement', affectations: 'Affectation', employes: 'Employé',
-  utilisateurs: 'Compte', sites: 'Site', services: 'Service', categories: 'Catégorie', parametres: 'Paramètre', signalements: 'Signalement',
+  utilisateurs: 'Compte', sites: 'Site', services: 'Service', categories: 'Catégorie', parametres: 'Paramètre', signalements: 'Signalement', rapports: 'Rapport',
 };
 
 // Détails : « clé : valeur » lisibles ; un changement { avant, apres } devient « avant → après ».
@@ -93,5 +93,31 @@ filtres.addEventListener('submit', (evenement) => {
 });
 filtres.elements.q.addEventListener('input', differer(recharger));
 for (const nom of ['action', 'utilisateur_id', 'date_debut', 'date_fin']) filtres.elements[nom].addEventListener('change', recharger);
+
+// Export : mêmes filtres que l'écran (rapport « journal » du serveur), inscrit au journal.
+async function exporter(format, bouton) {
+  const parametres = new URLSearchParams(Object.entries({
+    q: filtres.elements.q.value.trim(),
+    action: filtres.elements.action.value,
+    utilisateur_id: filtres.elements.utilisateur_id.value,
+    date_debut: filtres.elements.date_debut.value,
+    date_fin: filtres.elements.date_fin.value,
+  }).filter(([, valeur]) => valeur));
+  const libelle = bouton.textContent;
+  bouton.disabled = true;
+  bouton.textContent = 'Préparation…';
+  try {
+    const nom = await telecharger(`/rapports/journal/export/${format}${parametres.size ? `?${parametres}` : ''}`);
+    afficherMessage(`Fichier enregistré : ${nom}`, 'succes');
+    recharger();
+  } catch (erreur) {
+    afficherMessage(erreur.message);
+  } finally {
+    bouton.disabled = false;
+    bouton.textContent = libelle;
+  }
+}
+document.getElementById('export-csv').addEventListener('click', (evenement) => exporter('csv', evenement.currentTarget));
+document.getElementById('export-pdf').addEventListener('click', (evenement) => exporter('pdf', evenement.currentTarget));
 
 charger().catch((erreur) => afficherMessage(erreur.message));

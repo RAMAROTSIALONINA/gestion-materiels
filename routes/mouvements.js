@@ -39,7 +39,7 @@ async function siteDuService(serviceId) {
 
 // Périmètre d'un responsable : mouvements de son service (bénéficiaire, matériel
 // du service) ou touchant le site de son service.
-async function conditionPerimetre(utilisateur, valeurs) {
+export async function conditionPerimetre(utilisateur, valeurs) {
   const { serviceId, employeId } = perimetre(utilisateur);
   if (employeId !== undefined) return 'false';
   if (serviceId === undefined) return null;

@@ -15,7 +15,13 @@
   <div id="messages" class="messages" aria-live="polite"></div>
 
   <main class="contenu contenu-large">
-    <h1>Journal des opérations</h1>
+    <div class="barre-titre">
+      <h1>Journal des opérations</h1>
+      <div class="actions-ligne">
+        <button type="button" class="bouton bouton-secondaire" id="export-csv">Exporter en CSV (Excel)</button>
+        <button type="button" class="bouton" id="export-pdf">Exporter en PDF</button>
+      </div>
+    </div>
     <p class="aide">
       Connexions, validations, annulations, réceptions, remises, changements d’état, paramètres…
       Chaque opération sensible est inscrite ici avec son auteur, sa date et son adresse ; rien ne s’efface.

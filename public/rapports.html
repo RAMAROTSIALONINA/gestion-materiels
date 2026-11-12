@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Rapports — Gestion des matériels</title>
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/css/style.css">
+  <script type="module" src="/js/rapports.js"></script>
+</head>
+<body>
+  <header class="entete" id="entete">
+    <a class="marque" href="/">Gestion des matériels</a>
+  </header>
+  <div id="messages" class="messages" aria-live="polite"></div>
+
+  <main class="contenu contenu-large">
+    <div class="barre-titre">
+      <h1>Rapports</h1>
+      <div class="actions-ligne" id="exports" hidden>
+        <button type="button" class="bouton bouton-secondaire" id="export-csv">Exporter en CSV (Excel)</button>
+        <button type="button" class="bouton" id="export-pdf">Exporter en PDF</button>
+      </div>
+    </div>
+    <p class="aide" id="aide">
+      Choisissez un rapport, puis filtrez-le. Un export reprend exactement les filtres affichés ; il est inscrit au
+      journal des opérations.
+    </p>
+
+    <div class="onglets" role="tablist" id="onglets" aria-label="Rapports"></div>
+    <p class="description-rapport" id="description"></p>
+
+    <form class="filtres" id="filtres" role="search"></form>
+    <div class="tableau-conteneur">
+      <table class="tableau tableau-compact">
+        <thead><tr id="entetes"></tr></thead>
+        <tbody id="lignes"><tr><td class="cellule-vide">Chargement…</td></tr></tbody>
+      </table>
+    </div>
+    <div class="pagination" id="pagination"></div>
+  </main>
+</body>
+</html>

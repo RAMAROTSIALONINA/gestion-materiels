@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Gestion des matériels</title>
+  <title>Tableau de bord — Gestion des matériels</title>
   <link rel="icon" href="/favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="/css/style.css">
   <script type="module" src="/js/accueil.js"></script>
@@ -15,27 +15,83 @@
 
   <div id="messages" class="messages" aria-live="polite"></div>
 
-  <main class="contenu">
-    <h1 id="bonjour">Bonjour</h1>
+  <main class="contenu contenu-large">
+    <div class="barre-titre">
+      <h1>Tableau de bord</h1>
+      <a href="/rapports" class="bouton bouton-secondaire" id="lien-rapports" hidden>Rapports et exports</a>
+    </div>
     <p class="aide" id="presentation">
-      Utilisez le menu pour les matériels, les articles et les employés. Le tableau de bord (indicateurs, alertes,
-      derniers mouvements) arrivera avec les rapports.
+      Vue d’ensemble du parc et des stocks. Les mouvements sont comptés sur la période choisie
+      (les 30 derniers jours si vous n’en choisissez pas). Chaque carte ouvre la liste correspondante.
     </p>
 
-    <section class="carte" aria-labelledby="titre-etat">
-      <div class="carte-titre">
-        <h2 id="titre-etat">Serveur et base de données</h2>
-        <span id="pastille" class="pastille pastille-attente">Vérification…</span>
+    <form class="filtres filtres-seuls" id="filtres" role="search">
+      <div class="champ champ-periode">
+        <label for="date_debut">Du</label>
+        <input type="date" id="date_debut" name="date_debut">
+        <label for="date_fin">au</label>
+        <input type="date" id="date_fin" name="date_fin">
       </div>
-      <dl class="liste-etat">
-        <dt>Application</dt>      <dd id="etat-application">…</dd>
-        <dt>Base de données</dt>  <dd id="etat-base">…</dd>
-        <dt>Version du schéma</dt><dd id="etat-schema">…</dd>
-        <dt>Date du jour</dt>     <dd id="etat-date">…</dd>
-        <dt>Temps de réponse</dt> <dd id="etat-delai">…</dd>
-      </dl>
-      <button type="button" id="actualiser" class="bouton">Actualiser</button>
+      <div class="champ">
+        <label for="site_id">Site</label>
+        <select id="site_id" name="site_id"><option value="">Tous</option></select>
+      </div>
+      <div class="champ" id="champ-service">
+        <label for="service_id">Service</label>
+        <select id="service_id" name="service_id"><option value="">Tous</option></select>
+      </div>
+      <div class="champ">
+        <label for="categorie_id">Catégorie</label>
+        <select id="categorie_id" name="categorie_id"><option value="">Toutes</option></select>
+      </div>
+    </form>
+
+    <section class="bloc-indicateurs" aria-labelledby="titre-parc">
+      <h2 class="titre-bloc" id="titre-parc">Parc de matériels</h2>
+      <div class="indicateurs indicateurs-3" id="indicateurs-parc"></div>
     </section>
+    <section class="bloc-indicateurs" aria-labelledby="titre-articles">
+      <h2 class="titre-bloc" id="titre-articles">Articles</h2>
+      <div class="indicateurs indicateurs-4" id="indicateurs-articles"></div>
+    </section>
+    <section class="bloc-indicateurs" aria-labelledby="titre-mouvements">
+      <h2 class="titre-bloc" id="titre-mouvements">Mouvements de la période</h2>
+      <div class="indicateurs indicateurs-3" id="indicateurs-mouvements"></div>
+    </section>
+
+    <div class="grille-tableau-bord">
+      <section class="carte" aria-labelledby="titre-alertes-stock">
+        <div class="carte-titre">
+          <h2 id="titre-alertes-stock">Alertes de stock</h2>
+          <a href="/alertes" class="petit-lien">Toutes les alertes</a>
+        </div>
+        <ul class="liste-alertes" id="alertes-stock"><li class="secondaire">Chargement…</li></ul>
+      </section>
+      <section class="carte carte-tableau" aria-labelledby="titre-recents">
+        <div class="carte-titre">
+          <h2 id="titre-recents">Mouvements récents</h2>
+          <a href="/mouvements" class="petit-lien">Tous les mouvements</a>
+        </div>
+        <div class="tableau-conteneur">
+          <table class="tableau">
+            <thead>
+              <tr>
+                <th scope="col">Mouvement</th>
+                <th scope="col">Contenu</th>
+                <th scope="col">Lieux</th>
+              </tr>
+            </thead>
+            <tbody id="recents"><tr><td colspan="3" class="cellule-vide">Chargement…</td></tr></tbody>
+          </table>
+        </div>
+      </section>
+    </div>
+
+    <p class="etat-serveur" id="etat-serveur" hidden>
+      <span id="pastille" class="pastille pastille-attente">Vérification…</span>
+      <span id="etat-texte" class="secondaire"></span>
+      <button type="button" id="actualiser" class="bouton bouton-petit bouton-secondaire">Vérifier</button>
+    </p>
   </main>
 </body>
 </html>

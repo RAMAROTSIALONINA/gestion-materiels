@@ -634,7 +634,7 @@ psql "$DATABASE_URL_TEST" -v ON_ERROR_STOP=1 -f database/tests/test_regles.sql
 
 Résultat du 11/11/2026 sur PostgreSQL 17, migrations 0002 et 0003 comprises : **123 contrôles passés sur 123**. Le même jour, l'essai de deux validations simultanées sur un même stock a été refait : une seule est acceptée (§ 5).
 
-Les tests 1, 2, 12, 13 et 14 relèvent des phases suivantes : connexion, export CSV, redémarrage du serveur, restauration d'une sauvegarde.
+Les tests 1, 2 (connexion) et 12 (export CSV, phase 8) sont couverts par `npm test` ; les tests 13 et 14 (redémarrage du serveur, restauration d’une sauvegarde) relèvent de la phase 9.
 
 ---
 
@@ -655,4 +655,6 @@ Les tests 1, 2, 12, 13 et 14 relèvent des phases suivantes : connexion, export 
 | 10 | Retour de réparation (phase 7) | **Au choix du gestionnaire** : le matériel peut redevenir disponible même s'il est encore endommagé (signalé ensuite dans les alertes). Hors service, il reste en réparation ou part au rebut |
 | 11 | Délais d'alerte (phase 7) | **3 jours** pour un transfert en route, **30 jours** pour une réparation, retours annoncés **7 jours** avant ; modifiables par l'administrateur |
 | 12 | Alertes du responsable (phase 7) | **Oui, son service** et le site de son service |
-| 13 | Journal des opérations (phase 7) | **Consultable par l'administrateur** ; l'export viendra avec les rapports (phase 8) |
+| 13 | Journal des opérations (phase 7) | **Consultable par l'administrateur** ; exportable en CSV ou PDF depuis la phase 8 |
+| 14 | Articles sur le tableau de bord (12/11, phase 8) | **Leur nombre seulement** (suivis, en stock, sous le seuil, en rupture) : les unités diffèrent, une somme des quantités n'aurait pas de sens |
+| 15 | Export des rapports (12/11, phase 8) | **CSV et vrai fichier PDF** dès la première version (le cahier des charges rendait le PDF facultatif) ; chaque export respecte les filtres et le périmètre, et il est inscrit au journal (`EXPORT_RAPPORT`) |

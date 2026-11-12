@@ -13,8 +13,9 @@ import { icone } from './icones.js';
 const MENU = [
   {
     liens: [
-      { adresse: '/', libelle: 'Accueil', icone: 'accueil', saufRole: 'EMPLOYE' },
+      { adresse: '/', libelle: 'Tableau de bord', icone: 'accueil', saufRole: 'EMPLOYE' },
       { adresse: '/alertes', libelle: 'Alertes', icone: 'alertes', droit: 'alertes.lire', pastille: true },
+      { adresse: '/rapports', libelle: 'Rapports', icone: 'rapports', droit: 'rapports.lire' },
     ],
   },
   {

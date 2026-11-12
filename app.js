@@ -44,6 +44,8 @@ const PAGES = [
   { chemin: '/journal',                 fichier: 'journal.html',          acces: 'journal.lire' },
   // Page Paramètres : une carte par écran de réglage permis (au moins « Mon mot de passe »).
   { chemin: '/parametres',              fichier: 'parametres.html',       acces: 'connecte' },
+  // Phase 8 : rapports (le tableau de bord est la page d'accueil « / »).
+  { chemin: '/rapports',                fichier: 'rapports.html',         acces: 'rapports.lire' },
 ];
 
 export function creerApplication({ limiteConnexions = 20, nettoyageSessions = true } = {}) {

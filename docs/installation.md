@@ -1,6 +1,6 @@
 # Installation et lancement en local
 
-**Gestion des matériels et des articles** — version 0.7.1 (phase 7, interface revue le 12/11)
+**Gestion des matériels et des articles** — version 0.8.0 (phase 8 : tableau de bord et rapports)
 
 Ce guide permet d'installer l'application sur un poste, de créer la base de données sur Neon et de vérifier que tout fonctionne. La mise en ligne sur Render fera l'objet d'un guide séparé (phase 9).
 
@@ -110,7 +110,7 @@ npm test
 | Commande | Ce qu'elle vérifie | Résultat attendu |
 |---|---|---|
 | `npm run db:verifier` | Les règles tenues par la base (scénarios de recette 3 à 11, décisions du 11/11), sur la base de **test** | `123 contrôles réussis.` |
-| `npm test` | Le serveur : santé, sécurité, erreurs, transactions, connexion, sessions, droits, matériels, articles, mouvements, réceptions, affectations, signalements, états, alertes, journal | `pass 93`, `fail 0` |
+| `npm test` | Le serveur : santé, sécurité, erreurs, transactions, connexion, sessions, droits, matériels, articles, mouvements, réceptions, affectations, signalements, états, alertes, journal, tableau de bord, rapports et exports | `pass 98`, `fail 0` |
 
 Sans `DATABASE_URL_TEST`, `npm test` passe seulement les tests qui n'ont pas besoin de base, et le signale.
 
@@ -187,8 +187,10 @@ database/migrations/0002_description_courte.sql
 | `middleware/permissions.js` | Droits de chaque rôle et périmètre (service, employé) |
 | `services/mots-de-passe.js` | Argon2id, règles de choix, mots de passe provisoires |
 | `services/journal.js`, `validation.js` | Journal des opérations, contrôle des données reçues |
-| `routes/` | API : `sante`, `auth` (connexion), `utilisateurs`, `referentiels`, `employes`, `materiels`, `articles` |
+| `services/csv.js`, `pdf.js`, `libelles.js` | Exports des rapports : CSV pour Excel (point-virgule, BOM, formules neutralisées), PDF A4 paysage (pdfkit, une seule couleur, sans traits), libellés français |
+| `routes/` | API : `sante`, `auth` (connexion), `utilisateurs`, `referentiels`, `parametres`, `employes`, `materiels`, `articles`, `mouvements`, `affectations`, `signalements`, `suivi` (historique, alertes, journal), `rapports` (tableau de bord, rapports, exports) |
 | `node_modules/jsbarcode` | Code-barres des étiquettes, servi sous `/vendor/jsbarcode` (licence MIT) |
+| `node_modules/pdfkit` | Fabrication des rapports PDF par le serveur (version 0.20.2, licence MIT) |
 | `scripts/creer-admin.js` | Création d'un administrateur en ligne de commande |
 | `public/js/app.js` | Appels à l'API, messages, dialogues et confirmations, communs à toutes les pages |
 | `public/js/entete.js` | Cadre des pages connectées : barre latérale (menu par rubriques selon les droits, compte, déconnexion), barre du haut (recherche par code, cloche des alertes, menu du compte), cartes de la page Paramètres |

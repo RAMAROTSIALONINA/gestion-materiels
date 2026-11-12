@@ -43,6 +43,32 @@ export async function api(chemin, { methode = 'GET', corps } = {}) {
   throw new ErreurServeur(reponse.status, erreur?.code ?? 'INCONNUE', erreur?.message ?? `Erreur ${reponse.status}.`, donnees);
 }
 
+// Téléchargement d'un fichier (export CSV ou PDF) : une erreur (trop de lignes,
+// droit manquant…) s'affiche dans la bannière au lieu d'ouvrir une page brute.
+// Rend le nom du fichier enregistré.
+export async function telecharger(chemin) {
+  let reponse;
+  try {
+    reponse = await fetch(`/api${chemin}`, { credentials: 'same-origin' });
+  } catch {
+    throw new ErreurServeur(0, 'RESEAU', 'Le serveur ne répond pas. Vérifiez la connexion puis réessayez.');
+  }
+  if (!reponse.ok) {
+    const donnees = await reponse.json().catch(() => null);
+    throw new ErreurServeur(reponse.status, donnees?.erreur?.code ?? 'INCONNUE', donnees?.erreur?.message ?? `Erreur ${reponse.status}.`, donnees);
+  }
+  const fichier = await reponse.blob();
+  const entete = reponse.headers.get('content-disposition') ?? '';
+  const nom = decodeURIComponent(/filename\*?=(?:UTF-8'')?"?([^";]+)"?/i.exec(entete)?.[1] ?? 'export');
+  const adresse = URL.createObjectURL(fichier);
+  const lien = Object.assign(document.createElement('a'), { href: adresse, download: nom, hidden: true });
+  document.body.append(lien);
+  lien.click();
+  lien.remove();
+  setTimeout(() => URL.revokeObjectURL(adresse), 60000);
+  return nom;
+}
+
 // Bannière en haut à droite ; un succès disparaît seul, une erreur reste
 // jusqu'à ce qu'on la ferme.
 export function afficherMessage(texte, type = 'erreur') {
