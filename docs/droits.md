@@ -22,7 +22,7 @@ Un compte de responsable est rattaché à un service ; un compte d'employé à u
 |---|:-:|:-:|:-:|:-:|
 | Modifier les paramètres de l'application | ✓ | | | |
 | Créer et gérer les comptes utilisateurs | ✓ | | | |
-| Consulter le journal des opérations (écran **Journal**) | ✓ | | | |
+| Consulter le journal des opérations (menu **Paramètres › Journal des opérations**) | ✓ | | | |
 | Consulter les alertes (écran **Alertes** et pastille du menu) | ✓ | ✓ | son service ⁴ | |
 | Gérer sites, services et catégories | ✓ | | | |
 | Consulter sites, services, catégories et unités | ✓ | ✓ | ✓ | |
@@ -46,7 +46,7 @@ Un compte de responsable est rattaché à un service ; un compte d'employé à u
 
 ¹ La base ajoute sa propre règle : l'autorisation vient d'un administrateur, ou d'un gestionnaire **autre que l'auteur** du mouvement. Il n'y a pas d'étape séparée : la personne qui valide un mouvement à autoriser l'autorise (bouton « Autoriser et valider » sur la fiche du mouvement ; liste « À autoriser par moi » dans **Mouvements**). Son auteur, s'il est gestionnaire, ne voit pas ce bouton.
 ² Les transferts dont le site de destination est celui auquel son service est rattaché. Un service sans site ne reçoit rien : rattachez chaque service à son site.
-³ Seulement si l'administrateur a activé la fonction dans les paramètres (cahier des charges § 1.3 : « si cette fonction est activée »). La fonction s'active dans **Administration › Paramètres** (désactivée à l'installation) ; l'employé signale depuis **Mes matériels**, seulement sur un matériel qui lui est affecté.
+³ Seulement si l'administrateur a activé la fonction dans les paramètres (cahier des charges § 1.3 : « si cette fonction est activée »). La fonction s'active dans **Paramètres › Réglages de l’application** (désactivée à l'installation) ; l'employé signale depuis **Mes matériels**, seulement sur un matériel qui lui est affecté.
 ⁴ Décision du 11/11 (phase 7) : stocks sous le seuil propre au site de son service, retours en retard ou proches des employés et des matériels de son service, transferts qui partent de ce site ou y arrivent, réparations et matériels endommagés de son service. Pas de signalements, de mouvements à autoriser ni d'étiquettes : ce n'est pas à lui d'agir.
 
 Changer l'état d'un matériel (et l'envoyer en réparation ou l'en faire revenir) fait partie de « Créer et modifier les fiches matériels » : administrateur et gestionnaire. L'historique des états suit « Consulter les matériels » (le responsable : son service).

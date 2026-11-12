@@ -162,9 +162,18 @@ function creerMenu(utilisateur) {
   return menu;
 }
 
-// Un clic ailleurs ou la touche Échap referment les sous-menus.
+// Un clic ailleurs, le choix d'un lien ou la touche Échap referment les sous-menus
+// (et, sur téléphone, le menu déplié) : utile quand le lien ne recharge pas la page.
 document.addEventListener('click', (evenement) => {
-  if (!evenement.target.closest?.('.groupe-menu')) fermerSousMenus();
+  const cible = evenement.target;
+  if (cible.closest?.('.navigation a')) {
+    fermerSousMenus();
+    const entete = document.getElementById('entete');
+    entete?.classList.remove('menu-ouvert');
+    entete?.querySelector('.bouton-menu')?.setAttribute('aria-expanded', 'false');
+    return;
+  }
+  if (!cible.closest?.('.groupe-menu')) fermerSousMenus();
 });
 document.addEventListener('keydown', (evenement) => {
   if (evenement.key !== 'Escape') return;
@@ -172,6 +181,14 @@ document.addEventListener('keydown', (evenement) => {
   if (!ouvert) return;
   fermerSousMenus();
   ouvert.querySelector('.titre-groupe').focus();
+});
+
+// Changement d'onglet sans rechargement (Administration › Réglages) : le lien courant suit.
+window.addEventListener('hashchange', () => {
+  for (const lien of document.querySelectorAll('.navigation a')) {
+    if (estCourante(lien.getAttribute('href'))) lien.setAttribute('aria-current', 'page');
+    else lien.removeAttribute('aria-current');
+  }
 });
 
 // Hauteur de l'en-tête fixé : les messages et les ancres se placent dessous.

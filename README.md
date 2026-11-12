@@ -44,10 +44,10 @@ Connexion, rôles et droits : [docs/droits.md](docs/droits.md).
 8. Une **correction d'inventaire** reste en brouillon « À autoriser » : un administrateur ou un autre gestionnaire que son auteur la valide depuis **Mouvements** (case « À autoriser par moi »).
 9. **Réceptions** : un transfert envoyé reste « en route » jusqu'à ce que le site de destination confirme ce qui est arrivé (le responsable du service de ce site peut le faire). Un manquant demande un motif.
 10. **Affectations** → **Remettre un matériel** : scanner l'étiquette, choisir l'employé, saisir le n° de contrat, le n° de ticket et la date de retour prévue. **Retour** : l'état constaté décide du statut (endommagé → en réparation, hors service → réformé). **Prolonger** : nouvelle date, motif obligatoire.
-11. **Signalements** : l'administrateur les active dans **Administration › Paramètres**. L'employé signale alors une panne ou une perte depuis **Mes matériels** ; le gestionnaire la prend en charge puis la clôt en indiquant la suite donnée.
+11. **Signalements** : l'administrateur les active dans **Paramètres › Réglages de l’application**. L'employé signale alors une panne ou une perte depuis **Mes matériels** ; le gestionnaire la prend en charge puis la clôt en indiquant la suite donnée.
 12. **États** : sur la fiche d'un matériel, **Changer l'état**, **Envoyer en réparation** puis **Fin de réparation**. Un commentaire est exigé pour un matériel endommagé, hors service ou envoyé en réparation ; chaque changement est inscrit, avec son auteur et sa date, dans l'**Historique des états** (bouton de la liste des matériels). Un matériel hors service reste en réparation en attendant la décision, ou part au rebut.
-13. **Alertes** (menu, avec le nombre à traiter) : stocks sous le seuil, retours en retard ou proches, transferts en route depuis 3 jours, réparations depuis 30 jours, matériels endommagés encore en service, signalements et mouvements à autoriser. Les délais se changent dans **Administration › Paramètres**. Le responsable de service voit les alertes de son service.
-14. **Journal** (administrateur) : toutes les opérations sensibles, avec leur auteur, leur date et leurs détails.
+13. **Alertes** (menu, avec le nombre à traiter) : stocks sous le seuil, retours en retard ou proches, transferts en route depuis 3 jours, réparations depuis 30 jours, matériels endommagés encore en service, signalements et mouvements à autoriser. Les délais se changent dans **Paramètres › Réglages de l’application**. Le responsable de service voit les alertes de son service.
+14. **Paramètres › Journal des opérations** (administrateur) : toutes les opérations sensibles, avec leur auteur, leur date et leurs détails.
 
 ## Organisation du dossier
 

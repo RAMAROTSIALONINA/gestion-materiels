@@ -152,7 +152,7 @@ async function charger() {
   const portee = utilisateur.role === 'RESPONSABLE_SERVICE' ? ' Vous voyez votre service et le site de votre service.' : '';
   document.getElementById('aide').textContent = `Ce qui demande une action. Délais d’alerte : transferts en route depuis ${jours(delais.transfert)}, `
     + `réparations depuis ${jours(delais.reparation)}, retours prévus d’ici ${jours(delais.retour)}`
-    + `${peut('parametres.gerer') ? ' (modifiables dans Administration › Paramètres)' : ''}.${portee}`;
+    + `${peut('parametres.gerer') ? ' (modifiables dans Paramètres › Réglages de l’application)' : ''}.${portee}`;
   // Les rubriques à traiter d'abord ; celles qui sont vides à la fin.
   const triees = [...rubriques].sort((a, b) => Number(b.nombre > 0) - Number(a.nombre > 0));
   document.getElementById('sommaire').replaceChildren(...triees.filter((r) => r.nombre > 0).map((r) => creer('a', {

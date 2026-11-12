@@ -105,7 +105,7 @@ Valeurs livrées :
 
 Les trois délais d'alerte sont des nombres entiers de jours, de 0 (alerte immédiate) à 365.
 
-Modifiables depuis **Administration › Paramètres** : `nom_societe`, `signalements_actifs`, `connexion_tentatives_max`, `connexion_verrouillage_minutes` et les trois délais d'alerte. Les autres sont figés (ils entrent dans les codes et les dates déjà enregistrés).
+Modifiables depuis **Paramètres › Réglages de l’application** : `nom_societe`, `signalements_actifs`, `connexion_tentatives_max`, `connexion_verrouillage_minutes` et les trois délais d'alerte. Les autres sont figés (ils entrent dans les codes et les dates déjà enregistrés).
 
 ### 3.2 `roles` — profils d'accès
 
