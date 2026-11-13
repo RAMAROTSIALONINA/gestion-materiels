@@ -99,6 +99,7 @@ const RAPPORTS = {
   parc: {
     titre: 'État du parc',
     description: 'Les matériels avec leur état, leur statut, leur site et la personne qui les détient.',
+    codeBarres: 'code',
     filtres: ['q', 'categorie', 'site', 'service', 'employe', 'etat', 'statut'],
     categories: 'MATERIEL',
     colonnes: [
@@ -136,6 +137,7 @@ const RAPPORTS = {
   mouvements: {
     titre: 'Mouvements',
     description: 'Une ligne par article ou matériel déplacé : entrées, sorties et transferts, avec leur auteur.',
+    codeBarres: 'code_bien',
     filtres: ['q', 'periode', 'type', 'categorie', 'site', 'service', 'employe', 'statut_mouvement'],
     categories: 'TOUTES',
     colonnes: [
@@ -189,6 +191,7 @@ const RAPPORTS = {
   affectations: {
     titre: 'Affectations en cours',
     description: 'Les matériels remis aux employés et pas encore rendus, avec leur date de remise et leur état initial.',
+    codeBarres: 'code',
     filtres: ['q', 'periode', 'categorie', 'site', 'service', 'employe', 'etat', 'retard'],
     categories: 'MATERIEL',
     colonnes: [
@@ -234,6 +237,7 @@ const RAPPORTS = {
   retours: {
     titre: 'Retours',
     description: 'Les matériels rendus : date de retour, état constaté et observations.',
+    codeBarres: 'code',
     filtres: ['q', 'periode', 'categorie', 'site', 'service', 'employe', 'etat'],
     categories: 'MATERIEL',
     colonnes: [
@@ -280,6 +284,7 @@ const RAPPORTS = {
   stock: {
     titre: 'Stock des articles',
     description: 'Quantité disponible de chaque article, seuil minimum et alerte. Avec un site : le stock et le seuil propres à ce site.',
+    codeBarres: 'code',
     filtres: ['q', 'categorie', 'site', 'alerte'],
     categories: 'ARTICLE',
     colonnes: [
@@ -333,6 +338,7 @@ const RAPPORTS = {
   anomalies: {
     titre: 'Anomalies',
     description: 'Pertes, casses, manquants constatés à la réception des transferts, matériels en réparation et hors service.',
+    codeBarres: 'code',
     filtres: ['q', 'periode', 'nature', 'categorie', 'site', 'service'],
     categories: 'TOUTES',
     colonnes: [
@@ -590,6 +596,7 @@ routeurRapports.get('/rapports/:code/export/:format', exigerDroit('rapports.expo
     edition: `Édité le ${moment.maintenant} par ${req.utilisateur.nom}`,
     colonnes: rapport.colonnes,
     lignes,
+    codeBarres: rapport.codeBarres ?? null,
   });
   res.type('application/pdf').send(pdf);
 });

@@ -10,12 +10,25 @@
 </head>
 <body class="page-connexion">
   <main class="connexion">
-    <div class="carte carte-connexion">
-      <div class="connexion-marque">
-        <img src="/favicon.svg" alt="" width="36" height="36">
-        <span>Gestion des matériels</span>
+    <aside class="connexion-presentation" aria-hidden="true">
+      <div>
+        <div class="connexion-marque connexion-marque-clair">
+          <img src="/favicon.svg" alt="" width="40" height="40">
+          <span>Gestion des matériels</span>
+        </div>
+        <p class="connexion-accroche">Le parc, les stocks et les mouvements, réunis dans un même outil.</p>
+        <ul class="connexion-points">
+          <li>Parc et stocks suivis en temps réel</li>
+          <li>Mouvements, remises et retours tracés</li>
+          <li>Alertes et rapports en quelques clics</li>
+        </ul>
       </div>
+      <p class="connexion-note">Application réservée aux agents habilités.</p>
+    </aside>
+
+    <div class="carte carte-connexion">
       <h1>Connexion</h1>
+      <p class="connexion-intro">Accédez à votre espace de gestion.</p>
       <form id="formulaire" novalidate>
         <div id="erreur" class="erreur-formulaire" role="alert" hidden></div>
         <div class="champ">
@@ -24,7 +37,9 @@
         </div>
         <div class="champ">
           <label for="mot_de_passe">Mot de passe</label>
-          <input id="mot_de_passe" name="mot_de_passe" type="password" autocomplete="current-password" maxlength="200" required>
+          <div class="saisie-mot-de-passe">
+            <input id="mot_de_passe" name="mot_de_passe" type="password" autocomplete="current-password" maxlength="200" required>
+          </div>
         </div>
         <button id="valider" class="bouton bouton-large" type="submit">Se connecter</button>
       </form>

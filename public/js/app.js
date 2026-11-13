@@ -380,6 +380,7 @@ export function ecrireFiltresAdresse(filtres) {
   const parametres = new URLSearchParams(Object.entries(filtres).filter(([, valeur]) => valeur !== '' && valeur !== null && valeur !== undefined));
   const adresse = `${window.location.pathname}${parametres.size ? `?${parametres}` : ''}`;
   window.history.replaceState(null, '', adresse);
+  rafraichirResumesFiltres();
   return parametres;
 }
 
@@ -396,4 +397,136 @@ export function definitions(paires) {
       creer('dd', {}, valeur === null || valeur === undefined || valeur === '' ? '—' : valeur));
   }
   return liste_;
+}
+
+// ---------------------------------------------------------------------------
+// Filtres actifs : sous chaque formulaire de filtres, le rappel de ce qui est
+// posé, chaque pastille retirant son filtre. Aucune page n'a à s'en occuper :
+// les formulaires « filtres » sont suivis automatiquement.
+// ---------------------------------------------------------------------------
+const resumesFiltres = new Set();
+
+const texteCourt = (texte) => String(texte ?? '').replace(/\s+/g, ' ').trim();
+
+function libelleFiltre(controle) {
+  return texteCourt(controle.labels?.[0]?.textContent)
+    || controle.getAttribute('aria-label')
+    || controle.name;
+}
+
+function texteFiltre(controle) {
+  const libelle = libelleFiltre(controle);
+  if (controle.type === 'checkbox') return libelle;
+  const valeur = controle.value.trim();
+  if (controle.type === 'date') {
+    return `${libelle.charAt(0).toUpperCase()}${libelle.slice(1)} ${formaterDateCourte(valeur)}`;
+  }
+  if (controle.type === 'search') return `Recherche : ${valeur}`;
+  const option = controle.selectedOptions?.[0];
+  return `${libelle} : ${texteCourt(option?.textContent) || valeur}`;
+}
+
+function filtreActif(controle) {
+  if (!controle.name || controle.disabled || controle.closest('.filtres-actifs') || controle.closest('[hidden]')) return false;
+  return controle.type === 'checkbox' ? controle.checked : controle.value.trim() !== '';
+}
+
+function rendreResume(etat) {
+  const { formulaire, conteneur } = etat;
+  // Un formulaire reconstruit (rapports) retire le rappel : on le remet.
+  if (!conteneur.isConnected) formulaire.append(conteneur);
+
+  const actifs = [];
+  for (const controle of formulaire.elements) {
+    if (filtreActif(controle)) actifs.push({ controle, texte: texteFiltre(controle) });
+  }
+
+  const signature = actifs
+    .map(({ controle, texte }) => `${controle.name}=${controle.type === 'checkbox' ? 'oui' : controle.value}|${texte}`)
+    .join('~');
+  if (signature === etat.signature) return;
+  etat.signature = signature;
+
+  if (actifs.length === 0) {
+    conteneur.hidden = true;
+    conteneur.replaceChildren();
+    return;
+  }
+
+  const pastilles = actifs.map(({ controle, texte }) => {
+    const pastille = creer('button', { type: 'button', className: 'filtre-actif' });
+    pastille.setAttribute('aria-label', `Retirer le filtre : ${texte}`);
+    pastille.title = `Retirer le filtre : ${texte}`;
+    const croix = creer('span', { className: 'filtre-actif-croix', textContent: '×' });
+    croix.setAttribute('aria-hidden', 'true');
+    pastille.append(creer('span', { className: 'filtre-actif-texte', textContent: texte }), croix);
+    pastille.addEventListener('click', () => {
+      if (controle.type === 'checkbox') controle.checked = false;
+      else controle.value = '';
+      // Les pages écoutent « input » (recherche) ou « change » (listes) : on
+      // envoie les deux, puis on redessine tout de suite les pastilles.
+      controle.dispatchEvent(new Event('input', { bubbles: true }));
+      controle.dispatchEvent(new Event('change', { bubbles: true }));
+      rendreResume(etat);
+      controle.focus({ preventScroll: true });
+    });
+    return pastille;
+  });
+
+  const enfants = [...pastilles];
+  if (actifs.length > 1) {
+    const effacer = creer('button', { type: 'button', className: 'filtre-effacer', textContent: 'Tout effacer' });
+    effacer.title = 'Retirer tous les filtres';
+    effacer.addEventListener('click', () => window.location.assign(window.location.pathname));
+    enfants.push(effacer);
+  }
+  conteneur.hidden = false;
+  conteneur.replaceChildren(...enfants);
+}
+
+function planifierRendu(etat) {
+  if (etat.planifie) return;
+  etat.planifie = true;
+  setTimeout(() => {
+    etat.planifie = false;
+    rendreResume(etat);
+  }, 0);
+}
+
+function suivreFormulaireFiltres(formulaire) {
+  const conteneur = creer('div', { className: 'filtres-actifs', hidden: true });
+  conteneur.setAttribute('role', 'group');
+  conteneur.setAttribute('aria-label', 'Filtres actifs');
+  const etat = { formulaire, conteneur, signature: null, planifie: false };
+  resumesFiltres.add(etat);
+  formulaire.append(conteneur);
+
+  const rendre = () => planifierRendu(etat);
+  formulaire.addEventListener('input', rendre);
+  formulaire.addEventListener('change', rendre);
+  formulaire.addEventListener('focusin', rendre);
+  new MutationObserver(rendre).observe(formulaire, { childList: true, subtree: true });
+
+  rendreResume(etat);
+  // Les pages remplissent leurs listes puis posent les valeurs de l'adresse
+  // sans événement : deux rappels rattrapent ces cas. Les rechargements passent
+  // par ecrireFiltresAdresse(), qui rafraîchit aussi les pastilles.
+  setTimeout(rendre, 400);
+  setTimeout(rendre, 1200);
+}
+
+function rafraichirResumesFiltres() {
+  for (const etat of resumesFiltres) rendreResume(etat);
+}
+
+export function initialiserResumesFiltres(racine = document) {
+  for (const formulaire of racine.querySelectorAll('form.filtres')) {
+    if (![...resumesFiltres].some((etat) => etat.formulaire === formulaire)) suivreFormulaireFiltres(formulaire);
+  }
+}
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', () => initialiserResumesFiltres());
+} else {
+  initialiserResumesFiltres();
 }
