@@ -98,7 +98,7 @@ npm run admin:creer -- --nom "Prénom NOM" --email adresse@societe.mg --identifi
 
 La commande affiche un **mot de passe provisoire**, une seule fois. À la première connexion, l'application impose de le remplacer par un mot de passe personnel. Les comptes suivants se créent depuis l'écran **Utilisateurs** ; les règles de connexion et les droits de chaque rôle sont décrits dans [droits.md](droits.md).
 
-La même commande dépanne si le seul administrateur a perdu son mot de passe : elle crée un second administrateur, qui donne ensuite un mot de passe provisoire au premier.
+La même commande dépanne si le seul administrateur a perdu son mot de passe : elle crée un second administrateur, qui tape ensuite un nouveau mot de passe pour le premier (écran **Utilisateurs**, bouton **Modifier**).
 
 ## 6. Contrôler
 
@@ -110,7 +110,7 @@ npm test
 | Commande | Ce qu'elle vérifie | Résultat attendu |
 |---|---|---|
 | `npm run db:verifier` | Les règles tenues par la base (scénarios de recette 3 à 11, décisions du 11/11), sur la base de **test** | `123 contrôles réussis.` |
-| `npm test` | Le serveur : santé, sécurité, erreurs, transactions, connexion, sessions, droits, matériels, articles, mouvements, réceptions, affectations, signalements, états, alertes, journal, tableau de bord, rapports et exports | `pass 99`, `fail 0` |
+| `npm test` | Le serveur : santé, sécurité, erreurs, transactions, connexion, sessions, droits, matériels, articles, mouvements, réceptions, affectations, signalements, états, alertes, journal, tableau de bord, rapports et exports, lecture des codes-barres à la caméra | `pass 106`, `fail 0` |
 
 Sans `DATABASE_URL_TEST`, `npm test` passe seulement les tests qui n'ont pas besoin de base, et le signale.
 
@@ -195,4 +195,6 @@ database/migrations/0002_description_courte.sql
 | `public/js/app.js` | Appels à l'API, messages, dialogues et confirmations, communs à toutes les pages |
 | `public/js/entete.js` | Cadre des pages connectées : barre latérale (menu par rubriques selon les droits, compte, déconnexion), barre du haut (recherche par code, cloche des alertes, menu du compte), cartes de la page Paramètres |
 | `public/js/icones.js` | Icônes au trait du menu et des cartes, dessinées dans la page (aucun fichier à télécharger) |
+| `public/js/camera-code-barres.js` | Fenêtre « Scanner le code-barres » : ouvre la caméra, lit l'image, rend le code, coupe la caméra à la fermeture |
+| `public/js/lecteur-code128.js` | Lecteur Code 128 (format des étiquettes) écrit pour l'application, sans bibliothèque ; testé par `tests/lecteur-code128.test.js` |
 | `tests/` | Tests du serveur (`npm test`) |

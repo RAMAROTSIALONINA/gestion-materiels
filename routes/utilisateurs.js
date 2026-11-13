@@ -5,7 +5,7 @@ import { transaction, requete } from '../database/db.js';
 import { exigerDroit } from '../middleware/authentification.js';
 import { ErreurApi } from '../middleware/erreurs.js';
 import { journaliser } from '../services/journal.js';
-import { genererMotDePasseProvisoire, hacherMotDePasse } from '../services/mots-de-passe.js';
+import { controlerNouveauMotDePasse, hacherMotDePasse } from '../services/mots-de-passe.js';
 import { EMAIL, IDENTIFIANT, choix, identifiantNumerique, texte } from '../services/validation.js';
 
 export const routeurUtilisateurs = Router();
@@ -63,31 +63,49 @@ routeurUtilisateurs.get('/utilisateurs', reserveAdmin, async (req, res) => {
   res.json({ utilisateurs: rows });
 });
 
-// Création : la base fixe un mot de passe provisoire, montré une seule fois à
-// l'administrateur, que l'utilisateur doit changer à sa première connexion.
+// Création. Décisions du 13/11 : l'administrateur tape le mot de passe (champ
+// sous le rôle) ; il est obligatoire, définitif, sans changement imposé, et
+// suit les règles d'un mot de passe personnel. Plus de mot de passe
+// provisoire. Le mot de passe n'est jamais inscrit au journal.
 routeurUtilisateurs.post('/utilisateurs', reserveAdmin, async (req, res) => {
   const saisie = lireSaisie(req.body);
-  const provisoire = genererMotDePasseProvisoire();
-  const empreinte = await hacherMotDePasse(provisoire);
+  const choisi = typeof req.body?.mot_de_passe === 'string' ? req.body.mot_de_passe : '';
+  if (choisi === '') {
+    throw new ErreurApi(422, 'MOT_DE_PASSE_REQUIS', 'Tapez le mot de passe du compte.', { champ: 'mot_de_passe' });
+  }
+  const probleme = controlerNouveauMotDePasse(choisi, { email: saisie.email, identifiant: saisie.identifiant });
+  if (probleme) {
+    throw new ErreurApi(422, 'MOT_DE_PASSE_TROP_FAIBLE',
+      probleme.replace('votre identifiant ni votre adresse e-mail', 'l’identifiant ni l’adresse e-mail du compte'), { champ: 'mot_de_passe' });
+  }
+  const empreinte = await hacherMotDePasse(choisi);
   const utilisateur = await transaction(req.utilisateur.id, async (client) => {
     const { rows: [{ id }] } = await client.query(
       `INSERT INTO utilisateurs (nom, email, identifiant, role_code, employe_id, service_id, mot_de_passe_hash, doit_changer_mot_de_passe)
-       VALUES ($1, $2, $3, $4, $5, $6, $7, true) RETURNING id`,
+       VALUES ($1, $2, $3, $4, $5, $6, $7, false) RETURNING id`,
       [saisie.nom, saisie.email, saisie.identifiant, saisie.role_code, saisie.employe_id, saisie.service_id, empreinte],
     );
     await journaliser({
       utilisateurId: req.utilisateur.id, action: 'UTILISATEUR_CREE', entite: 'utilisateurs', entiteId: id,
-      metadonnees: { role: saisie.role_code }, ip: req.ip,
+      metadonnees: { role: saisie.role_code, mot_de_passe: 'choisi par l’administrateur' }, ip: req.ip,
     }, client);
     return lireUtilisateur(id, client);
   });
-  res.status(201).json({ utilisateur, mot_de_passe_provisoire: provisoire });
+  res.status(201).json({ utilisateur });
 });
 
+// Modification. Décision du 13/11 : l'administrateur peut aussi y taper un
+// nouveau mot de passe (définitif, mêmes règles qu'à la création) ; le compte
+// est alors débloqué et ses sessions ouvertes sont fermées. Pas pour son propre
+// compte : « Mon mot de passe » demande le mot de passe actuel.
 routeurUtilisateurs.patch('/utilisateurs/:id', reserveAdmin, async (req, res) => {
   const id = identifiantNumerique(req.params.id, { champ: 'id', libelle: 'Compte', obligatoire: true });
   const saisie = lireSaisie(req.body, { partiel: true });
-  if (Object.keys(saisie).length === 0) throw new ErreurApi(422, 'SAISIE_VIDE', 'Aucune modification reçue.');
+  const choisi = typeof req.body?.mot_de_passe === 'string' && req.body.mot_de_passe !== '' ? req.body.mot_de_passe : null;
+  if (Object.keys(saisie).length === 0 && choisi === null) throw new ErreurApi(422, 'SAISIE_VIDE', 'Aucune modification reçue.');
+  if (choisi !== null && id === req.utilisateur.id) {
+    throw new ErreurApi(409, 'MODIFICATION_DE_SOI', 'Pour votre propre compte, utilisez « Mon mot de passe ».', { champ: 'mot_de_passe' });
+  }
 
   const utilisateur = await transaction(req.utilisateur.id, async (client) => {
     // Verrou sur les administrateurs actifs : deux retraits simultanés ne
@@ -107,17 +125,37 @@ routeurUtilisateurs.patch('/utilisateurs/:id', reserveAdmin, async (req, res) =>
       throw new ErreurApi(409, 'DERNIER_ADMINISTRATEUR', 'Il doit rester au moins un administrateur actif.');
     }
 
+    if (choisi !== null) {
+      const probleme = controlerNouveauMotDePasse(choisi, { email: apres.email, identifiant: apres.identifiant });
+      if (probleme) {
+        throw new ErreurApi(422, 'MOT_DE_PASSE_TROP_FAIBLE',
+          probleme.replace('votre identifiant ni votre adresse e-mail', 'l’identifiant ni l’adresse e-mail du compte'), { champ: 'mot_de_passe' });
+      }
+    }
+
     const colonnes = Object.keys(saisie);
-    await client.query(
-      `UPDATE utilisateurs SET ${colonnes.map((colonne, rang) => `${colonne} = $${rang + 2}`).join(', ')} WHERE id = $1`,
-      [id, ...colonnes.map((colonne) => saisie[colonne])],
-    );
-    if (apres.statut !== 'ACTIF') await fermerSessions(client, id);
+    if (colonnes.length) {
+      await client.query(
+        `UPDATE utilisateurs SET ${colonnes.map((colonne, rang) => `${colonne} = $${rang + 2}`).join(', ')} WHERE id = $1`,
+        [id, ...colonnes.map((colonne) => saisie[colonne])],
+      );
+    }
+    if (choisi !== null) {
+      await client.query(
+        `UPDATE utilisateurs
+            SET mot_de_passe_hash = $2, doit_changer_mot_de_passe = false, tentatives_echouees = 0, verrouille_jusqu_a = NULL
+          WHERE id = $1`,
+        [id, await hacherMotDePasse(choisi)],
+      );
+    }
+    if (apres.statut !== 'ACTIF' || choisi !== null) await fermerSessions(client, id);
 
     const modifie = Object.fromEntries(
       colonnes.filter((colonne) => avant[colonne] !== saisie[colonne])
         .map((colonne) => [colonne, { avant: avant[colonne], apres: saisie[colonne] }]),
     );
+    // Le mot de passe lui-même n'est jamais inscrit au journal.
+    if (choisi !== null) modifie.mot_de_passe = 'changé par l’administrateur';
     await journaliser({
       utilisateurId: req.utilisateur.id, action: 'UTILISATEUR_MODIFIE', entite: 'utilisateurs', entiteId: id,
       metadonnees: modifie, ip: req.ip,
@@ -127,31 +165,9 @@ routeurUtilisateurs.patch('/utilisateurs/:id', reserveAdmin, async (req, res) =>
   res.json({ utilisateur });
 });
 
-// Nouveau mot de passe provisoire (oubli) : débloque le compte et ferme ses sessions.
-routeurUtilisateurs.post('/utilisateurs/:id/mot-de-passe-provisoire', reserveAdmin, async (req, res) => {
-  const id = identifiantNumerique(req.params.id, { champ: 'id', libelle: 'Compte', obligatoire: true });
-  if (id === req.utilisateur.id) {
-    throw new ErreurApi(409, 'MODIFICATION_DE_SOI', 'Pour votre propre compte, utilisez « Mon mot de passe ».');
-  }
-  const provisoire = genererMotDePasseProvisoire();
-  const empreinte = await hacherMotDePasse(provisoire);
-  const utilisateur = await transaction(req.utilisateur.id, async (client) => {
-    await lireUtilisateur(id, client);
-    await client.query(
-      `UPDATE utilisateurs
-          SET mot_de_passe_hash = $2, doit_changer_mot_de_passe = true,
-              tentatives_echouees = 0, verrouille_jusqu_a = NULL
-        WHERE id = $1`,
-      [id, empreinte],
-    );
-    await fermerSessions(client, id);
-    await journaliser({
-      utilisateurId: req.utilisateur.id, action: 'MOT_DE_PASSE_REINITIALISE', entite: 'utilisateurs', entiteId: id, ip: req.ip,
-    }, client);
-    return lireUtilisateur(id, client);
-  });
-  res.json({ utilisateur, mot_de_passe_provisoire: provisoire });
-});
+// Décision du 13/11 : plus de « mot de passe provisoire » pour un oubli ;
+// l'administrateur tape un nouveau mot de passe dans « Modifier » (PATCH
+// ci-dessus), ce qui débloque aussi le compte et ferme ses sessions.
 
 routeurUtilisateurs.post('/utilisateurs/:id/debloquer', reserveAdmin, async (req, res) => {
   const id = identifiantNumerique(req.params.id, { champ: 'id', libelle: 'Compte', obligatoire: true });

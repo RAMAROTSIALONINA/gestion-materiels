@@ -36,7 +36,7 @@ const MENU = [
 ];
 
 // Cartes de la page Paramètres, dans l'ordre d'affichage. Chacune suit le droit
-// de l'écran qu'elle ouvre ; « Mon mot de passe » est pour tout le monde.
+// de l'écran qu'elle ouvre.
 // Rapports et Historique des états y sont rangés depuis le 12/11.
 const RUBRIQUES_PARAMETRES = [
   {
@@ -49,7 +49,7 @@ const RUBRIQUES_PARAMETRES = [
   },
   {
     adresse: '/utilisateurs', titre: 'Utilisateurs et accès', icone: 'utilisateurs', teinte: 'violet', droit: 'utilisateurs.gerer',
-    texte: 'Comptes, rôles, mots de passe provisoires, suspensions et déblocages.',
+    texte: 'Comptes, rôles, mots de passe, suspensions et déblocages.',
   },
   {
     adresse: '/employes', titre: 'Employés', icone: 'employes', teinte: 'bleu', droit: 'employes.gerer',
@@ -71,10 +71,8 @@ const RUBRIQUES_PARAMETRES = [
     adresse: '/journal', titre: 'Journal des opérations', icone: 'journal', teinte: 'gris', droit: 'journal.lire',
     texte: 'Qui a fait quoi, quand, et depuis quel poste.',
   },
-  {
-    adresse: '/mot-de-passe', titre: 'Mon mot de passe', icone: 'mot-de-passe', teinte: 'orange',
-    texte: 'Choisir un nouveau mot de passe personnel.',
-  },
+  // « Mon mot de passe » n'est plus une carte (13/11) : il reste dans le menu du
+  // compte (en haut à droite) et sous le nom, en bas de la barre latérale.
 ];
 // Écrans rangés sous « Paramètres » : le lien reste en surbrillance, et un
 // lien de retour vers la page Paramètres s'affiche au-dessus du titre.
@@ -85,8 +83,8 @@ export const aLeDroit = (utilisateur, droit) => utilisateur.droits.includes(droi
 // Cartes visibles pour ce compte.
 export const rubriquesParametres = (utilisateur) => RUBRIQUES_PARAMETRES
   .filter((rubrique) => !rubrique.droit || aLeDroit(utilisateur, rubrique.droit));
-// « Paramètres » apparaît dans le menu dès qu'une carte autre que le mot de passe est permise.
-const voitParametres = (utilisateur) => rubriquesParametres(utilisateur).some((rubrique) => rubrique.droit);
+// « Paramètres » apparaît dans le menu dès qu'une carte est permise.
+const voitParametres = (utilisateur) => rubriquesParametres(utilisateur).length > 0;
 
 // Nombre d'alertes à traiter, affiché sur la cloche et dans le menu. Gardé deux
 // minutes dans l'onglet (par utilisateur) pour ne pas interroger le serveur à chaque page.
@@ -313,8 +311,10 @@ function lienRetourParametres(utilisateur) {
   const { pathname } = window.location;
   if (pathname === '/parametres' || !estCourante('/parametres') || !voitParametres(utilisateur)) return;
   const titre = document.querySelector('main h1');
-  if (!titre || titre.previousElementSibling?.classList.contains('fil')) return;
-  titre.before(creer('p', { className: 'fil' }, creer('a', { href: '/parametres', textContent: '‹ Paramètres' })));
+  // Un titre accompagné de boutons (barre de titre) : le lien va au-dessus de toute la barre.
+  const cible = titre?.closest('.barre-titre') ?? titre;
+  if (!cible || cible.previousElementSibling?.classList.contains('fil')) return;
+  cible.before(creer('p', { className: 'fil' }, creer('a', { href: '/parametres', textContent: '‹ Paramètres' })));
 }
 
 export async function initialiserEntete() {

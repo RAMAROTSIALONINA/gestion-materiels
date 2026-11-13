@@ -6,7 +6,9 @@ import {
   LIBELLES_ETAT, LIBELLES_STATUT, afficherMessage, afficherPagination, api, badge, badgeEtat, badgeStatut, creer, definitions,
   differer, ecrireFiltresAdresse, formaterDateCourte, ligneVide, lireFiltresAdresse, options, ouvrirFormulaire,
 } from './app.js';
+import { cameraDisponible, scannerCodeBarres } from './camera-code-barres.js';
 import { aLeDroit, initialiserEntete } from './entete.js';
+import { icone } from './icones.js';
 import { aujourdhui } from './reception.js';
 
 const utilisateur = await initialiserEntete();
@@ -229,6 +231,23 @@ async function afficherSituation(code) {
 
 async function rafraichirSituation() {
   if (codeAffiche) await afficherSituation(codeAffiche);
+}
+
+// Bouton « Scanner » (13/11) : la caméra lit le code-barres de l'étiquette,
+// puis la situation du matériel s'affiche comme après une saisie.
+if (cameraDisponible()) {
+  const boutonScanner = element('scanner');
+  boutonScanner.prepend(icone('scanner'));
+  boutonScanner.setAttribute('aria-label', 'Scanner le code-barres avec la caméra');
+  boutonScanner.hidden = false;
+  element('aide-scan').textContent = '« Scanner » lit l’étiquette avec la caméra de l’appareil. '
+    + 'Avec une douchette : cliquez dans le champ, puis scannez l’étiquette.';
+  boutonScanner.addEventListener('click', async () => {
+    const code = await scannerCodeBarres();
+    if (!code) return;
+    element('code-scan').value = code;
+    element('scan').requestSubmit();
+  });
 }
 
 element('scan').addEventListener('submit', (evenement) => {

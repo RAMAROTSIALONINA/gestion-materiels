@@ -27,11 +27,16 @@
     <form class="carte bloc-scan" id="scan" role="search">
       <div class="ligne-recherche">
         <div class="champ">
-          <label for="code-scan">Matériel : scanner l’étiquette ou saisir le code</label>
-          <input id="code-scan" name="code" autocomplete="off" placeholder="MAT-2026-0001" maxlength="100">
+          <label for="code-scan">Matériel : scannez le code-barres ou saisissez le code</label>
+          <input id="code-scan" name="code" autocomplete="off" placeholder="MAT-2026-0001" maxlength="100"
+            aria-describedby="aide-scan">
         </div>
+        <button type="button" id="scanner" class="bouton bouton-secondaire bouton-scanner" hidden>Scanner</button>
         <button type="submit" class="bouton">Voir sa situation</button>
       </div>
+      <p class="aide-champ aide-scan" id="aide-scan">
+        Avec une douchette : cliquez dans le champ, puis scannez l’étiquette.
+      </p>
     </form>
 
     <section class="carte situation" id="situation" aria-labelledby="titre-situation" hidden>

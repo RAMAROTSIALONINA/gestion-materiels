@@ -1,9 +1,10 @@
-// Écran Utilisateurs (administrateur) : liste, création, modification,
-// mot de passe provisoire, déblocage.
+// Écran Utilisateurs (administrateur) : liste, création, modification
+// (mot de passe tapé par l'administrateur), déblocage.
 import {
   afficherMessage, api, confirmer, creer, formaterDateHeure, montrerErreurFormulaire, ouvrirDialogue,
 } from './app.js';
 import { initialiserEntete } from './entete.js';
+import { icone } from './icones.js';
 
 const moi = await initialiserEntete();
 const lignes = document.getElementById('lignes');
@@ -50,11 +51,12 @@ function ligne(compte) {
   const badges = creer('div', { className: 'badges' },
     creer('span', { className: `badge ${classeStatut}`, textContent: libelleStatut }),
     compte.bloque && creer('span', { className: 'badge badge-danger', textContent: 'Bloqué' }),
-    compte.doit_changer_mot_de_passe && creer('span', { className: 'badge badge-info', textContent: 'Mot de passe provisoire' }));
+    compte.doit_changer_mot_de_passe && creer('span', { className: 'badge badge-info', textContent: 'Mot de passe à changer' }));
 
+  // Décision du 13/11 : plus de bouton « Mot de passe provisoire » ; un mot de
+  // passe oublié se remplace dans « Modifier ».
   const actions = creer('div', { className: 'actions-ligne' },
     boutonLigne('Modifier', compte.nom, () => ouvrirFormulaire(compte)),
-    compte.id !== moi.id && boutonLigne('Mot de passe provisoire', compte.nom, () => reinitialiser(compte)),
     compte.bloque && boutonLigne('Débloquer', compte.nom, () => debloquer(compte)));
 
   return creer('tr', {},
@@ -120,6 +122,35 @@ function ouvrirFormulaire(compte = null) {
     statut.disabled = true;
   }
 
+  // Décision du 13/11 : sous le rôle, l'administrateur tape le mot de passe ;
+  // il est définitif. Obligatoire à la création (plus de mot de passe
+  // provisoire) ; laissé vide à la modification, il reste inchangé. Pas pour
+  // son propre compte (« Mon mot de passe » demande le mot de passe actuel).
+  // Un œil dans le champ l'affiche ou le masque.
+  let blocMotDePasse = null;
+  const motDePasse = soiMeme ? null
+    : creer('input', { name: 'mot_de_passe', type: 'password', maxLength: 200, autocomplete: 'new-password', required: !modification });
+  if (motDePasse) {
+    blocMotDePasse = champ(modification ? 'Nouveau mot de passe' : 'Mot de passe', motDePasse, modification
+      ? '10 caractères au moins, sans l’identifiant ni l’adresse e-mail. La personne le gardera ; ses sessions ouvertes '
+        + 'seront fermées. Laissez vide pour garder le mot de passe actuel.'
+      : '10 caractères au moins, sans l’identifiant ni l’adresse e-mail. La personne le gardera.');
+    const oeil = creer('button', { type: 'button', className: 'bouton-oeil' });
+    oeil.setAttribute('aria-controls', motDePasse.id);
+    const montrer = (visible) => {
+      motDePasse.type = visible ? 'text' : 'password';
+      oeil.replaceChildren(icone(visible ? 'oeil-barre' : 'oeil'));
+      oeil.setAttribute('aria-pressed', String(visible));
+      oeil.setAttribute('aria-label', visible ? 'Masquer le mot de passe' : 'Afficher le mot de passe');
+      oeil.title = visible ? 'Masquer le mot de passe' : 'Afficher le mot de passe';
+    };
+    montrer(false);
+    oeil.addEventListener('click', () => montrer(motDePasse.type === 'password'));
+    const ligne = creer('div', { className: 'saisie-mot-de-passe' });
+    motDePasse.replaceWith(ligne);
+    ligne.append(motDePasse, oeil);
+  }
+
   const blocService = champ('Service', service, 'Le responsable voit les biens de ce service.');
   const blocEmploye = champ('Fiche employé', employe, 'L’employé voit les matériels qui lui sont affectés.');
   const ajusterChamps = () => {
@@ -135,6 +166,7 @@ function ouvrirFormulaire(compte = null) {
     champ('Adresse e-mail', email),
     champ('Identifiant (facultatif)', identifiant, 'Permet de se connecter sans l’adresse e-mail.'),
     champ('Rôle', role, soiMeme ? 'Vous ne pouvez pas changer votre propre rôle.' : null),
+    blocMotDePasse,
     blocService,
     blocEmploye,
     statut && champ('Statut', statut, soiMeme
@@ -164,6 +196,7 @@ function ouvrirFormulaire(compte = null) {
       service_id: role.value === 'RESPONSABLE_SERVICE' ? service.value || null : null,
       employe_id: role.value === 'EMPLOYE' ? employe.value || null : null,
     };
+    if (motDePasse?.value) corps.mot_de_passe = motDePasse.value;
     if (modification) {
       corps.statut = statut.value;
       if (compte.statut === 'ACTIF' && statut.value !== 'ACTIF') {
@@ -182,11 +215,11 @@ function ouvrirFormulaire(compte = null) {
       if (modification) {
         await api(`/utilisateurs/${compte.id}`, { methode: 'PATCH', corps });
         fermer();
-        afficherMessage('Compte modifié.', 'succes');
+        afficherMessage(corps.mot_de_passe ? 'Compte modifié, avec le nouveau mot de passe.' : 'Compte modifié.', 'succes');
       } else {
         const reponse = await api('/utilisateurs', { methode: 'POST', corps });
         fermer();
-        montrerMotDePasse(reponse.utilisateur, reponse.mot_de_passe_provisoire, 'Compte créé');
+        afficherMessage(`Compte créé pour ${reponse.utilisateur.nom}, avec le mot de passe que vous avez choisi.`, 'succes');
       }
       await charger();
     } catch (erreur) {
@@ -195,52 +228,6 @@ function ouvrirFormulaire(compte = null) {
       valider.disabled = false;
     }
   });
-}
-
-// Le mot de passe provisoire n'est montré qu'une fois.
-function montrerMotDePasse(compte, motDePasse, titre) {
-  const code = creer('code', { className: 'code-provisoire', textContent: motDePasse });
-  const copier = creer('button', { type: 'button', className: 'bouton bouton-secondaire bouton-petit', textContent: 'Copier' });
-  copier.addEventListener('click', async () => {
-    try {
-      await navigator.clipboard.writeText(motDePasse);
-      copier.textContent = 'Copié';
-    } catch {
-      getSelection().selectAllChildren(code);
-      afficherMessage('Copie automatique impossible : le mot de passe est sélectionné, copiez-le avec Ctrl+C.');
-    }
-  });
-  const termine = creer('button', { type: 'button', className: 'bouton', textContent: 'J’ai noté le mot de passe' });
-  const { fermer } = ouvrirDialogue({
-    titre,
-    contenu: creer('div', {},
-      creer('p', { textContent: `Mot de passe provisoire pour ${compte.nom} :` }),
-      creer('div', { className: 'ligne-code' }, code, copier),
-      creer('p', {
-        className: 'avertissement',
-        textContent: `Transmettez-le en main propre. Il ne sera plus affiché ; ${compte.nom} devra le changer à sa première connexion.`,
-      })),
-    actions: [termine],
-  });
-  termine.addEventListener('click', fermer);
-  termine.focus();
-}
-
-async function reinitialiser(compte) {
-  const accord = await confirmer({
-    titre: 'Nouveau mot de passe provisoire ?',
-    message: `L’ancien mot de passe de ${compte.nom} ne fonctionnera plus, et ses sessions ouvertes seront fermées.`,
-    libelle: 'Générer',
-    danger: true,
-  });
-  if (!accord) return;
-  try {
-    const reponse = await api(`/utilisateurs/${compte.id}/mot-de-passe-provisoire`, { methode: 'POST' });
-    montrerMotDePasse(reponse.utilisateur, reponse.mot_de_passe_provisoire, 'Mot de passe provisoire');
-    await charger();
-  } catch (erreur) {
-    afficherMessage(erreur.message);
-  }
 }
 
 async function debloquer(compte) {

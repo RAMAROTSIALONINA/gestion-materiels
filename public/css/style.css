@@ -601,16 +601,6 @@ h2 { font-size: 1.1rem; margin: 0; }
 .dialogue::backdrop { background: rgb(15 23 42 / 45%); }
 .dialogue h2 { margin-bottom: 16px; }
 .dialogue-actions { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 8px; margin-top: 20px; }
-.ligne-code { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin: 8px 0 16px; }
-.code-provisoire {
-  background: var(--surface-douce);
-  border: 1px dashed var(--bordure);
-  border-radius: 6px;
-  font: 600 1.25rem/1.4 ui-monospace, "Cascadia Mono", Consolas, monospace;
-  letter-spacing: .06em;
-  padding: 8px 14px;
-  user-select: all;
-}
 
 /* Messages à l'écran (jamais de alert()) */
 .messages {
@@ -994,6 +984,33 @@ a.indicateur:hover {
 .alerte-quantite { align-items: flex-end; display: flex; flex-direction: column; font-size: .88rem; font-variant-numeric: tabular-nums; gap: 4px; white-space: nowrap; }
 .etat-serveur { align-items: center; display: flex; flex-wrap: wrap; gap: 10px; margin: 8px 0 0; }
 
+/* Comptes : mot de passe avec un œil pour l'afficher ou le masquer (13/11) */
+.saisie-mot-de-passe { position: relative; }
+.champ .saisie-mot-de-passe input { padding-right: 46px; }
+/* Edge ajoute son propre œil : on le retire pour n'en garder qu'un. */
+.saisie-mot-de-passe input::-ms-reveal, .saisie-mot-de-passe input::-ms-clear { display: none; }
+.bouton-oeil {
+  align-items: center;
+  background: none;
+  border: 0;
+  border-radius: 6px;
+  color: var(--texte-doux);
+  cursor: pointer;
+  display: flex;
+  height: 34px;
+  justify-content: center;
+  padding: 0;
+  position: absolute;
+  right: 4px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 38px;
+}
+.bouton-oeil:hover { background: var(--surface-douce); color: var(--texte); }
+.bouton-oeil:focus-visible { outline: 2px solid var(--primaire); outline-offset: 0; }
+.bouton-oeil[aria-pressed="true"] { color: var(--primaire); }
+.bouton-oeil .icone { height: 20px; width: 20px; }
+
 /* Matériels et articles : titre et liste déroulante (12/11) */
 .titre-vue { align-items: center; display: flex; flex-wrap: wrap; gap: 8px 16px; margin-bottom: 6px; }
 .titre-vue h1 { margin: 0; }
@@ -1030,6 +1047,43 @@ a.indicateur:hover {
 .bloc-scan { margin-bottom: 16px; padding-bottom: 4px; }
 .situation { margin-bottom: 24px; }
 .actions-situation { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 4px; }
+
+/* Scanner un code-barres à la caméra (13/11) */
+.bouton-scanner { align-items: center; display: inline-flex; gap: 8px; }
+.bouton-scanner[hidden] { display: none; }
+.bouton-scanner .icone { height: 18px; width: 18px; }
+.aide-scan { margin: -8px 0 12px; }
+.scan-cadre {
+  aspect-ratio: 4 / 3;
+  background: #000;
+  border-radius: var(--rayon);
+  overflow: hidden;
+  position: relative;
+}
+.scan-cadre[hidden] { display: none; }
+.scan-video { display: block; height: 100%; object-fit: cover; width: 100%; }
+/* Cadre de visée : bande horizontale au centre, le reste assombri. */
+.scan-viseur {
+  border: 2px solid rgb(255 255 255 / 90%);
+  border-radius: 8px;
+  bottom: 32%;
+  box-shadow: 0 0 0 100vmax rgb(0 0 0 / 35%);
+  left: 7%;
+  position: absolute;
+  right: 7%;
+  top: 32%;
+}
+.scan-viseur::after {
+  background: #ef4444;
+  content: "";
+  height: 2px;
+  left: 4%;
+  opacity: .85;
+  position: absolute;
+  right: 4%;
+  top: calc(50% - 1px);
+}
+.scan-etat { color: var(--texte-doux); font-size: .9rem; margin: 10px 0 0; }
 
 /* Rapports (phase 8) */
 .description-rapport { color: var(--texte-doux); font-size: .92rem; margin: -8px 0 14px; }

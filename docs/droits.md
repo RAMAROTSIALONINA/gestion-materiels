@@ -70,10 +70,13 @@ Tous les droits du tableau sont en place depuis la phase 8 (12/11). L'employé a
 | Limite par poste | 20 tentatives par quart d'heure depuis une même adresse |
 | Compte fermé | Un compte suspendu ou désactivé est refusé ; la raison n'est donnée qu'à qui a saisi le bon mot de passe |
 | Session | Stockée en base, dans un cookie inaccessible au JavaScript, envoyé seulement en HTTPS en ligne ; **fermée après 4 heures sans activité** ; nouvel identifiant à chaque connexion |
-| Premier mot de passe | Provisoire (3 groupes de 4 caractères), donné par l'administrateur ; **à changer avant toute autre action** |
+| Premier mot de passe | Tapé par l'administrateur dans « Nouvel utilisateur », sous le rôle : **obligatoire et définitif**, avec les règles d'un mot de passe personnel (décisions du 13/11). Un œil dans le champ l'affiche ou le masque. Plus de mot de passe provisoire à l'écran |
+| Mot de passe provisoire | Seulement pour le **premier administrateur** (`npm run admin:creer`) : montré une seule fois, **à changer avant toute autre action** (badge « Mot de passe à changer ») |
 | Mot de passe personnel | 10 caractères au moins, sans l'identifiant ni l'adresse e-mail |
 | Changement de mot de passe | Ferme les autres sessions ouvertes du compte |
-| Suspension, nouveau mot de passe provisoire | Ferment aussitôt les sessions du compte |
+| Suspension, nouveau mot de passe tapé par l'administrateur | Ferment aussitôt les sessions du compte |
+| Mot de passe oublié | L'administrateur tape un nouveau mot de passe dans « Modifier le compte » (le bouton « Mot de passe provisoire » est retiré le 13/11) |
+| Mot de passe tapé dans « Modifier le compte » (13/11) | **Définitif**, mêmes règles qu'un mot de passe personnel ; débloque le compte ; laissé vide, le mot de passe ne change pas. Pas pour son propre compte (passer par « Mon mot de passe », qui demande l'actuel) |
 | Changement de rôle | Pris en compte dès la requête suivante |
 | Administrateurs | Il en reste toujours au moins un actif ; un administrateur ne peut ni changer son propre rôle ni fermer son propre compte |
 | Écritures | Refusées si elles viennent d'un autre site |
@@ -104,5 +107,6 @@ Chaque opération ci-dessous est inscrite dans `historique_actions`, avec son au
 | 3 | Qui crée les **fiches employés** ? | **Gestionnaire et administrateur** |
 | 4 | Durée avant déconnexion automatique | **4 heures** sans activité |
 | 5 | Signalement d'un problème par l'employé | **Oui, activable** par l'administrateur ; construit avec l'écran « Mes matériels » (phase 6) |
+| 6 | Mot de passe à la création et à la modification d'un compte (13/11) | **Choisi par l'administrateur et définitif** (champ sous le rôle, aussi dans « Modifier le compte ») ; **obligatoire à la création** : plus de mot de passe provisoire ni de bouton « Mot de passe provisoire » (un oubli se règle dans « Modifier ») ; bouton « Afficher » remplacé par un **œil**. « Mon mot de passe » n'est plus une carte de Paramètres : il reste dans le menu du compte |
 
 Ces décisions sont vérifiées par `tests/permissions.test.js`.
