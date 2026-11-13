@@ -130,6 +130,7 @@ if (pageAccueil(utilisateur) !== '/' || !aLeDroit(utilisateur, 'rapports.lire'))
   window.location.replace(aLeDroit(utilisateur, 'mes_materiels.lire') ? '/mes-materiels' : '/parametres');
 } else {
   element('lien-rapports').hidden = false;
+  element('lien-inventaire').hidden = !aLeDroit(utilisateur, 'materiels.lire');
   const { sites, services, categories, responsable } = await api('/rapports/options');
   for (const site of sites) filtres.elements.site_id.append(creer('option', { value: String(site.id), textContent: site.nom }));
   for (const service of services) filtres.elements.service_id.append(creer('option', { value: String(service.id), textContent: service.nom }));

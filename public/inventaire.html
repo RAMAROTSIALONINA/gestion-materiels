@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Inventaire — Gestion des matériels</title>
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/css/style.css">
+  <script type="module" src="/js/inventaire.js"></script>
+</head>
+<body>
+  <header class="entete" id="entete">
+    <a class="marque" href="/">Gestion des matériels</a>
+  </header>
+  <div id="messages" class="messages" aria-live="polite"></div>
+
+  <main class="contenu contenu-large">
+    <div class="barre-titre">
+      <h1>Inventaire</h1>
+      <a href="/rapports" class="bouton bouton-secondaire" id="lien-rapports" hidden>Rapports et exports</a>
+    </div>
+    <p class="aide" id="presentation">
+      L’inventaire se calcule automatiquement : chaque matériel est compté à l’unité depuis sa fiche,
+      chaque article selon les quantités tenues par les mouvements validés. Rien à saisir ici.
+    </p>
+
+    <div class="onglets" role="tablist" id="onglets" aria-label="Inventaire">
+      <button type="button" role="tab" id="onglet-materiels" data-vue="materiels"
+        aria-controls="panneau-materiels" aria-selected="true">Matériels</button>
+      <button type="button" role="tab" id="onglet-articles" data-vue="articles"
+        aria-controls="panneau-articles" aria-selected="false">Articles</button>
+    </div>
+
+    <form class="filtres" id="filtres" role="search">
+      <div class="champ champ-large">
+        <label for="q">Rechercher</label>
+        <input type="search" id="q" name="q" placeholder="Code ou désignation…" autocomplete="off">
+      </div>
+      <div class="champ" id="champ-site">
+        <label for="site_id">Site</label>
+        <select id="site_id" name="site_id"><option value="">Tous</option></select>
+      </div>
+      <div class="champ">
+        <label for="categorie_id">Catégorie</label>
+        <select id="categorie_id" name="categorie_id"><option value="">Toutes</option></select>
+      </div>
+      <div class="champ" data-vue="materiels">
+        <label for="statut">Statut</label>
+        <select id="statut" name="statut"><option value="">Tous</option></select>
+      </div>
+      <div class="champ" data-vue="materiels">
+        <label for="etat">État</label>
+        <select id="etat" name="etat"><option value="">Tous</option></select>
+      </div>
+      <div class="champ champ-cases" data-vue="articles">
+        <label class="case"><input type="checkbox" name="alerte" value="oui"> Sous le seuil</label>
+        <label class="case"><input type="checkbox" name="rupture" value="oui"> En rupture</label>
+      </div>
+    </form>
+
+    <section class="bloc-indicateurs" aria-labelledby="titre-synthese">
+      <h2 class="titre-bloc" id="titre-synthese">Synthèse du parc</h2>
+      <div class="indicateurs indicateurs-4" id="indicateurs-materiels">
+        <p class="secondaire">Chargement…</p>
+      </div>
+      <div class="indicateurs indicateurs-4" id="indicateurs-articles" hidden></div>
+    </section>
+
+    <section id="panneau-materiels" role="tabpanel" aria-labelledby="onglet-materiels">
+      <div class="tableau-conteneur">
+        <table class="tableau">
+          <thead>
+            <tr>
+              <th scope="col">Code</th>
+              <th scope="col">Désignation</th>
+              <th scope="col">Catégorie</th>
+              <th scope="col">Site · service</th>
+              <th scope="col">Responsable</th>
+              <th scope="col">État</th>
+              <th scope="col">Statut</th>
+            </tr>
+          </thead>
+          <tbody id="lignes-materiels">
+            <tr><td colspan="7" class="cellule-vide">Chargement…</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="pagination" id="pagination-materiels"></div>
+    </section>
+
+    <section id="panneau-articles" role="tabpanel" aria-labelledby="onglet-articles" hidden>
+      <div class="tableau-conteneur">
+        <table class="tableau">
+          <thead><tr id="entetes-articles"></tr></thead>
+          <tbody id="lignes-articles">
+            <tr><td colspan="7" class="cellule-vide">Chargement…</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="pagination" id="pagination-articles"></div>
+    </section>
+  </main>
+</body>
+</html>

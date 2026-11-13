@@ -22,6 +22,7 @@ const MENU = [
     liens: [
       // Décision du 12/11 : un seul écran, une liste déroulante choisit Matériels ou Articles.
       { adresse: '/materiels', libelle: 'Matériels et articles', icone: 'materiels', droit: 'materiels.lire', actifSur: ['/materiels', '/articles'] },
+      { adresse: '/inventaire', libelle: 'Inventaire', icone: 'inventaire', droit: 'materiels.lire' },
       { adresse: '/mes-materiels', libelle: 'Mes matériels', icone: 'mes-materiels', droit: 'mes_materiels.lire', employe: true },
     ],
   },

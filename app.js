@@ -26,6 +26,7 @@ const PAGES = [
   { chemin: '/employes',       fichier: 'employes.html',       acces: 'employes.gerer' },
   { chemin: '/materiels',      fichier: 'materiels.html',      acces: 'materiels.lire' },
   { chemin: '/materiels/:id',  fichier: 'materiel.html',       acces: 'materiels.lire' },
+  { chemin: '/inventaire',     fichier: 'inventaire.html',     acces: 'materiels.lire' },
   { chemin: '/articles',       fichier: 'articles.html',       acces: 'articles.lire' },
   { chemin: '/articles/:id',   fichier: 'article.html',        acces: 'articles.lire' },
   { chemin: '/etiquettes',     fichier: 'etiquettes.html',     acces: 'materiels.gerer' },

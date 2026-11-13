@@ -5,6 +5,7 @@ import { routeurAffectations } from './affectations.js';
 import { routeurArticles } from './articles.js';
 import { creerRouteurAuth } from './auth.js';
 import { routeurEmployes } from './employes.js';
+import { routeurInventaire } from './inventaire.js';
 import { routeurMateriels } from './materiels.js';
 import { routeurMouvements } from './mouvements.js';
 import { routeurParametres } from './parametres.js';
@@ -25,6 +26,7 @@ export function creerRouteurApi(options = {}) {
   routeur.use(routeurEmployes);
   routeur.use(routeurMateriels);
   routeur.use(routeurArticles);
+  routeur.use(routeurInventaire);
   routeur.use(routeurMouvements);
   routeur.use(routeurAffectations);
   routeur.use(routeurSignalements);

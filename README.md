@@ -87,7 +87,7 @@ gestion-materiels/
 | Affectations et retours | Essentielle |
 | États et maintenance | Essentielle |
 | Rapports + export CSV et PDF | Importante — **fait** (phase 8, décision du 12/11 : PDF dès la première version) |
-| Inventaire physique | Évolution proche |
+| Inventaire automatique (matériels comptés à l’unité, stocks d’articles par site, lecture seule) | Essentielle — **fait** (13/11) |
 | Code-barres : impression des étiquettes, recherche par scan | **Avancé en première version** (décision du 11/11) |
 
 Hors première version : comptabilité et amortissements, circuit d'achats fournisseurs, application mobile native, IA, synchronisation hors ligne.
