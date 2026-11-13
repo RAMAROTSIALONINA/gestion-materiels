@@ -639,6 +639,9 @@ routeurRapports.get('/tableau-de-bord', exigerDroit('rapports.lire'), async (req
             count(*) FILTER (WHERE v.statut IN ('PERDU', 'REFORME'))::int AS sortis,
             count(*) FILTER (WHERE v.retour_en_retard)::int AS retours_en_retard
        FROM v_materiels v ${cm.ou()}`, cm.valeurs);
+  // Répartition par statut, pour le graphique du parc (mêmes filtres que les cartes).
+  const repartition = requete(
+    `SELECT v.statut, count(*)::int AS nombre FROM v_materiels v ${cm.ou()} GROUP BY v.statut`, cm.valeurs);
 
   // Articles : leur nombre seulement (décision du 12/11) ; avec un site, ceux suivis sur ce site.
   const site = ctx.responsable ? ctx.site : f.site;
@@ -713,15 +716,27 @@ routeurRapports.get('/tableau-de-bord', exigerDroit('rapports.lire'), async (req
        ${depuisMouvements}
       ORDER BY mv.date_mouvement DESC, mv.id DESC
       LIMIT 8`, cv.valeurs);
+  // Série quotidienne (jours sans mouvement absents), pour le graphique de la période.
+  const serie = requete(
+    `SELECT mv.date_mouvement::text AS jour,
+            count(*) FILTER (WHERE t.sens = 'ENTREE')::int AS entrees,
+            count(*) FILTER (WHERE t.sens = 'SORTIE')::int AS sorties,
+            count(*) FILTER (WHERE t.sens = 'TRANSFERT')::int AS transferts
+       ${depuisMouvements}
+      GROUP BY mv.date_mouvement
+      ORDER BY mv.date_mouvement`, cv.valeurs);
 
-  const [m, a, al, mvt, rec] = await Promise.all([materiels, articles, alertes, mouvements, recents]);
+  const [m, a, al, mvt, rec, st, ser] = await Promise.all([materiels, articles, alertes, mouvements, recents, repartition, serie]);
+  const statuts = Object.fromEntries(Object.keys(STATUTS).map((code) => [code, 0]));
+  for (const ligne of st.rows) if (Object.hasOwn(statuts, ligne.statut)) statuts[ligne.statut] = ligne.nombre;
   res.json({
     periode: { debut: bornes.debut, fin: bornes.fin },
     perimetre: ctx.responsable ? 'service' : 'tout',
-    materiels: m.rows[0],
+    materiels: { ...m.rows[0], statuts },
     articles: a.rows[0],
     alertes_stock: { total: al.rows[0]?.total ?? 0, elements: al.rows.map(({ total, ...reste }) => reste) },
     mouvements: mvt.rows[0],
+    serie_mouvements: ser.rows,
     recents: rec.rows,
   });
 });

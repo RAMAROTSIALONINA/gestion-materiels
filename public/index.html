@@ -25,7 +25,7 @@
     </div>
     <p class="aide" id="presentation">
       Vue d’ensemble du parc et des stocks. Les mouvements sont comptés sur la période choisie
-      (les 30 derniers jours si vous n’en choisissez pas). Chaque carte ouvre la liste correspondante.
+      (les 30 derniers jours si vous n’en choisissez pas). Les graphiques suivent les filtres.
     </p>
 
     <form class="filtres filtres-seuls" id="filtres" role="search">
@@ -49,17 +49,31 @@
       </div>
     </form>
 
-    <section class="bloc-indicateurs" aria-labelledby="titre-parc">
-      <h2 class="titre-bloc" id="titre-parc">Parc de matériels</h2>
-      <div class="indicateurs indicateurs-3" id="indicateurs-parc"></div>
-    </section>
-    <section class="bloc-indicateurs" aria-labelledby="titre-articles">
-      <h2 class="titre-bloc" id="titre-articles">Articles</h2>
-      <div class="indicateurs indicateurs-4" id="indicateurs-articles"></div>
-    </section>
-    <section class="bloc-indicateurs" aria-labelledby="titre-mouvements">
-      <h2 class="titre-bloc" id="titre-mouvements">Mouvements de la période</h2>
-      <div class="indicateurs indicateurs-3" id="indicateurs-mouvements"></div>
+    <section class="bloc-indicateurs" aria-labelledby="titre-graphiques">
+      <h2 class="titre-bloc" id="titre-graphiques">Vue d’ensemble en graphiques</h2>
+      <div class="grille-graphiques">
+        <article class="carte graphique" aria-labelledby="titre-graphique-parc">
+          <div class="carte-titre">
+            <h3 id="titre-graphique-parc">Parc de matériels</h3>
+            <span class="secondaire" id="detail-graphique-parc"></span>
+          </div>
+          <div class="graphique-anneau" id="graphique-parc"><p class="secondaire">Chargement…</p></div>
+        </article>
+        <article class="carte graphique" aria-labelledby="titre-graphique-articles">
+          <div class="carte-titre">
+            <h3 id="titre-graphique-articles">Articles</h3>
+            <span class="secondaire" id="detail-graphique-articles"></span>
+          </div>
+          <div class="graphique-articles" id="graphique-articles"><p class="secondaire">Chargement…</p></div>
+        </article>
+        <article class="carte graphique graphique-mouvements" aria-labelledby="titre-graphique-mouvements">
+          <div class="carte-titre">
+            <h3 id="titre-graphique-mouvements">Mouvements</h3>
+            <span class="secondaire" id="detail-graphique-mouvements"></span>
+          </div>
+          <div id="graphique-mouvements"><p class="secondaire">Chargement…</p></div>
+        </article>
+      </div>
     </section>
 
     <div class="grille-tableau-bord">

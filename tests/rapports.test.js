@@ -130,13 +130,30 @@ describe('tableau de bord et rapports', { skip: raisonSansBase }, () => {
     // 5 réceptions de matériels + 1 d'articles + 1 retour ; 2 remises, consommation, perte, casse ; 1 transfert.
     assert.deepEqual(tout.mouvements, { entrees: 7, sorties: 5, transferts: 1 });
     assert.equal(tout.recents.length, 8);
+    // Graphiques : répartition par statut et série par jour, mêmes filtres.
+    assert.deepEqual(tout.materiels.statuts, {
+      DISPONIBLE: 1, AFFECTE: 1, EN_REPARATION: 2, EN_TRANSIT: 0, PERDU: 1, REFORME: 0,
+    });
+    assert.ok(Array.isArray(tout.serie_mouvements));
+    assert.ok(tout.serie_mouvements.every((jour) => /^\d{4}-\d{2}-\d{2}$/.test(jour.jour)));
+    assert.deepEqual(
+      tout.serie_mouvements.reduce((somme, jour) => [
+        somme[0] + jour.entrees, somme[1] + jour.sorties, somme[2] + jour.transferts,
+      ], [0, 0, 0]),
+      [7, 5, 1],
+      'la série couvre tous les mouvements de la période',
+    );
 
     const depot = (await n.admin.requete(`/api/tableau-de-bord?site_id=${ids.depot}`)).donnees;
     assert.deepEqual([depot.materiels.total, depot.materiels.hors_service, depot.materiels.sortis], [1, 1, 1]);
+    assert.deepEqual(depot.materiels.statuts, {
+      DISPONIBLE: 0, AFFECTE: 0, EN_REPARATION: 1, EN_TRANSIT: 0, PERDU: 1, REFORME: 0,
+    });
     assert.deepEqual(depot.articles, { total: 1, en_stock: 1, sous_seuil: 0, en_rupture: 0 });
     assert.equal((await n.admin.requete(`/api/tableau-de-bord?categorie_id=${ids.mobilier}`)).donnees.materiels.total, 1);
     const futur = (await n.admin.requete(`/api/tableau-de-bord?date_debut=${decaler(1)}&date_fin=${decaler(2)}`)).donnees;
     assert.deepEqual(futur.mouvements, { entrees: 0, sorties: 0, transferts: 0 });
+    assert.deepEqual(futur.serie_mouvements, []);
     assert.equal(futur.recents.length, 0);
     const inverse = await n.admin.requete(`/api/tableau-de-bord?date_debut=${decaler(0)}&date_fin=${decaler(-1)}`);
     assert.equal(inverse.statut, 422);

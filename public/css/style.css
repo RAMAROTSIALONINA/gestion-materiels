@@ -1224,6 +1224,66 @@ a.indicateur:hover {
 .alerte-quantite { align-items: flex-end; display: flex; flex-direction: column; font-size: .88rem; font-variant-numeric: tabular-nums; gap: 4px; white-space: nowrap; }
 .etat-serveur { align-items: center; display: flex; flex-wrap: wrap; gap: 10px; margin: 8px 0 0; }
 
+/* Tableau de bord : graphiques (13/11) — anneau du parc, barres des articles,
+   série des mouvements ; dessinés sans bibliothèque, teintes du thème. */
+.grille-graphiques { display: grid; gap: 14px; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.graphique { min-width: 0; }
+.graphique-mouvements { grid-column: 1 / -1; }
+.graphique .carte-titre { margin-bottom: 14px; }
+.graphique .carte-titre h3 { font-size: 1rem; margin: 0; }
+.graphique .carte-titre .secondaire { font-size: .82rem; }
+@media (max-width: 900px) {
+  .grille-graphiques { grid-template-columns: minmax(0, 1fr); }
+  .graphique-mouvements { grid-column: auto; }
+}
+.anneau-graphique { align-items: center; display: flex; gap: 24px; }
+.anneau-visuel { flex: none; height: 138px; position: relative; width: 138px; }
+.anneau-svg { display: block; height: 100%; width: 100%; }
+.anneau-piste { fill: none; stroke: var(--surface-douce); stroke-width: 14; }
+.anneau-part { fill: none; stroke-width: 14; transition: stroke-dasharray .3s ease; }
+.anneau-centre {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  inset: 0;
+  justify-content: center;
+  line-height: 1.1;
+  position: absolute;
+}
+.anneau-centre strong { font-size: 1.6rem; font-variant-numeric: tabular-nums; }
+.anneau-centre span { color: var(--texte-doux); font-size: .72rem; }
+.graphique-legende { display: grid; flex: 1; gap: 8px; list-style: none; margin: 0; min-width: 0; padding: 0; }
+.graphique-legende li { align-items: center; display: flex; font-size: .88rem; gap: 9px; }
+.graphique-libelle { flex: 1; min-width: 0; overflow-wrap: anywhere; }
+.graphique-valeur { font-variant-numeric: tabular-nums; }
+.graphique-pastille { background: var(--teinte); border-radius: 3px; flex: none; height: 10px; width: 10px; }
+.barres-horizontales { display: grid; gap: 16px; }
+.barre-ligne { display: grid; gap: 7px; }
+.barre-entete { align-items: center; display: flex; font-size: .88rem; gap: 12px; justify-content: space-between; }
+.barre-entete strong { font-variant-numeric: tabular-nums; }
+.barre-libelle { align-items: center; display: flex; gap: 9px; min-width: 0; }
+.barre-piste { background: var(--surface-douce); border-radius: 999px; height: 9px; overflow: hidden; }
+.barre-part { background: var(--teinte); border-radius: 999px; display: block; height: 100%; transition: width .3s ease; }
+.graphique-serie { display: block; height: auto; width: 100%; }
+.graphique-grille { stroke: var(--bordure); stroke-width: 1; }
+.graphique-axe { stroke: var(--bordure-forte); stroke-width: 1; }
+.graphique-etiquette { fill: var(--texte-doux); font-size: 10.5px; font-variant-numeric: tabular-nums; }
+.graphique-legende-inline {
+  align-items: center;
+  color: var(--texte-doux);
+  display: flex;
+  flex-wrap: wrap;
+  font-size: .86rem;
+  gap: 6px 20px;
+  margin-top: 10px;
+}
+.graphique-legende-item { align-items: center; display: flex; gap: 8px; }
+.graphique-legende-item strong { color: var(--texte); font-variant-numeric: tabular-nums; }
+@media (max-width: 420px) {
+  .anneau-graphique { align-items: flex-start; flex-direction: column; }
+}
+
+
 /* Comptes : mot de passe avec un œil pour l'afficher ou le masquer (13/11) */
 .saisie-mot-de-passe { position: relative; }
 .champ .saisie-mot-de-passe input { padding-right: 46px; }
